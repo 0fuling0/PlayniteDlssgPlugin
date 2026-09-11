@@ -1,0 +1,122 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - main
+      - master
+    paths:
+      - 'manifest/extension.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Get version from manifest
+        id: version
+        shell: pwsh
+        run: |
+          $manifest = Get-Content "manifest/extension.yaml"
+          $match = $manifest | Select-String 'Version:\s*(.+)'
+
+          if (-not $match) {
+            throw "Version not found in manifest/extension.yaml"
+          }
+
+          $version = $match.Matches.Groups[1].Value.Trim()
+
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=v$version" >> $env:GITHUB_OUTPUT
+
+          Write-Host "Version: $version"
+          Write-Host "Tag: v$version"
+
+      - name: Create tag if not exists
+        if: github.event_name == 'workflow_dispatch'
+        shell: pwsh
+        run: |
+          $tag = "${{ steps.version.outputs.tag }}"
+
+          git fetch --tags
+
+          if (-not (git tag -l $tag)) {
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+            git tag $tag
+            git push origin $tag
+          }
+          else {
+            Write-Host "Tag $tag already exists."
+          }
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore NuGet packages
+        shell: pwsh
+        run: |
+          nuget restore PlayniteDlssgPlugin.sln
+
+      - name: Build Release
+        shell: pwsh
+        run: |
+          msbuild PlayniteDlssgPlugin.sln /p:Configuration=Release /verbosity:minimal
+
+      - name: Download Playnite Portable
+        shell: pwsh
+        run: |
+          $url = "https://github.com/JosefNemec/Playnite/releases/download/10.58/10.58.7z"
+          $output = "$env:TEMP\Playnite.7z"
+          $installPath = "$env:TEMP\Playnite"
+
+          Invoke-WebRequest -Uri $url -OutFile $output
+
+          7z x $output -o"$installPath" -y
+
+          Add-Content $env:GITHUB_PATH $installPath
+
+      - name: Pack Plugin
+        shell: pwsh
+        run: |
+          $toolbox = "$env:TEMP\Playnite\Toolbox.exe"
+          $output = "$env:GITHUB_WORKSPACE\artifacts"
+
+          New-Item -ItemType Directory -Force -Path $output | Out-Null
+
+          & $toolbox pack "bin\Release" $output
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Playnite Toolbox pack failed."
+          }
+
+          Get-ChildItem $output
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: plugin-package
+          path: artifacts/*.pext
+          if-no-files-found: error
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          files: artifacts/*.pext
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

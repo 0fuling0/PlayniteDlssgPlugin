@@ -1,0 +1,30 @@
+# Build outputs
+bin/
+obj/
+*.pext
+
+# NuGet
+packages/
+*.nupkg
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Submodule (cloned in CI)
+dlssg_for_sm86/
+
+# Local config
+local.settings.json

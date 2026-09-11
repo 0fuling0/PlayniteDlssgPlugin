@@ -1,0 +1,275 @@
+<UserControl x:Class="PlayniteDlssgPluginSettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:PlayniteDlssgPlugin"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="600"
+             Name="SettingsView">
+    <UserControl.Resources>
+        <local:WidthToItemWidthConverter x:Key="WidthToItemWidthConverter"/>
+        
+        <Style x:Key="PlaceholderTextBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Style.Triggers>
+                <Trigger Property="Text" Value="">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <VisualBrush Stretch="None" AlignmentX="Left" AlignmentY="Center">
+                                <VisualBrush.Visual>
+                                    <TextBlock Text="输入或选择路径" Foreground="Gray" Margin="4,0,0,0" FontSize="13"/>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="Text" Value="{x:Null}">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <VisualBrush Stretch="None" AlignmentX="Left" AlignmentY="Center">
+                                <VisualBrush.Visual>
+                                    <TextBlock Text="输入或选择路径" Foreground="Gray" Margin="4,0,0,0" FontSize="13"/>
+                                </VisualBrush.Visual>
+                            </VisualBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextBoxLikeCardBorder" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource NormalBorderBrush}"/>
+            <Setter Property="BorderThickness" Value="{DynamicResource ControlBorderThickness}"/>
+            <Setter Property="CornerRadius" Value="{DynamicResource ControlCornerRadius}"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Padding" Value="12,10,12,12"/>
+            <Setter Property="MinWidth" Value="260"/>
+            <Setter Property="MaxWidth" Value="500"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{DynamicResource FontSizeLarge}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="Padding" Value="0,0,0,4"/>
+        </Style>
+
+        <Style x:Key="SettingLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Margin" Value="0,10,0,2"/>
+            <Setter Property="FontSize" Value="{DynamicResource FontSize}"/>
+        </Style>
+
+        <Style x:Key="SettingDesc" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="{DynamicResource FontSizeSmall}"/>
+            <Setter Property="Opacity" Value="0.6"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="NormalBtn" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Padding" Value="14,5"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="0,5,0,0"/>
+            <Setter Property="MinWidth" Value="90"/>
+            <Setter Property="FontSize" Value="{DynamicResource FontSize}"/>
+        </Style>
+
+        <Style x:Key="ComboStyle" TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="Margin" Value="0,2,0,0"/>
+            <Setter Property="MinHeight" Value="28"/>
+            <Setter Property="FontSize" Value="{DynamicResource FontSize}"/>
+        </Style>
+
+        <Style x:Key="CheckStyle" TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+            <Setter Property="Margin" Value="0,5,0,0"/>
+            <Setter Property="Foreground" Value="{DynamicResource TextBrush}"/>
+            <Setter Property="FontSize" Value="{DynamicResource FontSize}"/>
+        </Style>
+    </UserControl.Resources>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" 
+                  HorizontalContentAlignment="Stretch"
+                  Name="MainScrollViewer">
+        <StackPanel Margin="4">
+            <StackPanel Margin="4,0,4,8">
+                <TextBlock FontSize="{DynamicResource FontSizeLarger}" FontWeight="Bold" Text="Playnite DLSSG Plugin 配置"
+                           Foreground="{DynamicResource TextBrush}"/>
+                <TextBlock Margin="0,4,0,0" TextWrapping="Wrap" Opacity="0.7"
+                           Foreground="{DynamicResource TextBrush}" FontSize="{DynamicResource FontSizeSmall}"
+                           Text="本插件释放文件来自 https://github.com/sdli1995/dlssg_for_sm86"/>
+            </StackPanel>
+
+            <WrapPanel x:Name="CardsPanel" 
+                       Orientation="Horizontal" 
+                       HorizontalAlignment="Center"
+                       ItemWidth="{Binding ElementName=MainScrollViewer, Path=ActualWidth, Converter={StaticResource WidthToItemWidthConverter}}">
+                
+                <Border Style="{StaticResource TextBoxLikeCardBorder}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="释放操作"/>
+                        
+                        <StackPanel Margin="0,0,0,6">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="默认释放范围"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="选择点击释放文件时默认处理的游戏范围"/>
+                            <ComboBox Style="{StaticResource ComboStyle}" 
+                                      SelectedValue="{Binding Settings.ReleaseScope, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="当前筛选结果=列表筛选后游戏；当前选中游戏=手动选中；全部游戏=整个游戏库">
+                                <ComboBoxItem Content="当前筛选结果"/>
+                                <ComboBoxItem Content="当前选中游戏"/>
+                                <ComboBoxItem Content="全部游戏"/>
+                            </ComboBox>
+                            <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                       Text="当前筛选结果=列表筛选后；当前选中游戏=手动选中；全部游戏=整个库"/>
+                        </StackPanel>
+
+                        <Button Style="{StaticResource NormalBtn}" Content="释放文件"
+                                Command="{Binding ReleaseByConfigCommand}"
+                                ToolTip="使用当前配置和默认释放范围释放 DLL / INI 文件到目标游戏目录"/>
+                        <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                   Text="点击上方按钮将按当前配置释放文件到目标游戏目录"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource TextBoxLikeCardBorder}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="自定义 INI 配置"/>
+
+                        <CheckBox Style="{StaticResource CheckStyle}" Content="使用自定义 INI 内容（下方选项生成)"
+                                  IsChecked="{Binding Settings.UseCustomIni, UpdateSourceTrigger=PropertyChanged}"
+                                  ToolTip="启用后，插件会根据下方选项自动生成 INI 内容；禁用则直接复制源目录下选定的 INI 文件"/>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <StackPanel Margin="0,6,0,0">
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="Router（渲染架构）"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="SM86 = Ampere架构(RTX 30系)；SM75 = Turing架构(RTX 20系)"/>
+                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                          SelectedValue="{Binding Settings.Router, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedValuePath="Content"
+                                          ToolTip="SM86适用于RTX 30系；SM75适用于RTX 20系">
+                                    <ComboBoxItem Content="SM86"/>
+                                    <ComboBoxItem Content="SM75"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,6,0,0">
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="KernelImage（内核镜像模式）"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="PTX=驱动JIT编译(兼容性最好)；Cubin=预编译二进制(需精确匹配GPU)；Auto=自动选择"/>
+                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                          SelectedValue="{Binding Settings.KernelImage, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedValuePath="Content"
+                                          ToolTip="PTX=驱动JIT编译(兼容性最好)；Cubin=预编译二进制；Auto=自动选择">
+                                    <ComboBoxItem Content="PTX"/>
+                                    <ComboBoxItem Content="Cubin"/>
+                                    <ComboBoxItem Content="Auto"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,6,0,0">
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="HardwareBilinear（硬件双线性过滤）"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="0=关闭(精确输出，默认)；1=开启(近似采样，仅SM86/Ampere支持)"/>
+                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                          SelectedValue="{Binding Settings.HardwareBilinear, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedValuePath="Content"
+                                          ToolTip="0=精确输出(默认)；1=硬件近似双线性过滤，仅SM86支持">
+                                    <ComboBoxItem Content="0"/>
+                                    <ComboBoxItem Content="1"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,6,0,0">
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="MaxGeneratedFrames（最大生成帧数）"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="1=2X帧生成；2=3X；3=4X(上限，实际倍率由游戏决定)"/>
+                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                          SelectedValue="{Binding Settings.MaxGeneratedFrames, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedValuePath="Content"
+                                          ToolTip="帧生成倍率上限：1=2倍，2=3倍，3=4倍">
+                                    <ComboBoxItem Content="1"/>
+                                    <ComboBoxItem Content="2"/>
+                                    <ComboBoxItem Content="3"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Margin="0,6,0,0">
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="LogLevel（日志等级）"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="0=关闭 1=仅错误 2=诊断信息 3=详细调试"/>
+                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                          SelectedValue="{Binding Settings.LogLevel, UpdateSourceTrigger=PropertyChanged}"
+                                          SelectedValuePath="Content"
+                                          ToolTip="0=关闭 1=仅错误 2=诊断信息 3=详细调试">
+                                    <ComboBoxItem Content="0"/>
+                                    <ComboBoxItem Content="1"/>
+                                    <ComboBoxItem Content="2"/>
+                                    <ComboBoxItem Content="3"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource TextBoxLikeCardBorder}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="文件路径设置"/>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="源目录"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="DLSSG 文件所在文件夹（留空则使用插件内置资源）"/>
+                            <DockPanel Margin="0,3,0,0">
+                                <Button Content="浏览..." Width="50" Margin="0,0,6,0"
+                                        Command="{Binding BrowseSourceDirectoryCommand}"
+                                        ToolTip="选择包含 DLL 和 INI 文件的文件夹"/>
+                                <TextBox Style="{StaticResource PlaceholderTextBox}"
+                                         Text="{Binding Settings.SourceDirectory, UpdateSourceTrigger=PropertyChanged}"
+                                         ToolTip="输入或选择路径"/>
+                            </DockPanel>
+                            <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                       Text="DLL来源：内置资源根目录(version.dll) 或 altnative文件夹(dinput8/dxgi/winhttp/winmm.dll)"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                       Text="INI来源：内置资源根目录(dlssg_sm86.ini) 或 config/presets(sm86-default/performance.ini)"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="DLL 文件"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="选择要部署的 DLL 代理文件"/>
+                            <ComboBox Style="{StaticResource ComboStyle}" 
+                                      SelectedValue="{Binding Settings.DllFileName, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      IsEditable="False"
+                                      ToolTip="可选：version.dll(根目录)、dinput8.dll、dxgi.dll、winhttp.dll、winmm.dll(altnative文件夹)">
+                                <ComboBoxItem Content="version.dll"/>
+                                <ComboBoxItem Content="dinput8.dll"/>
+                                <ComboBoxItem Content="dxgi.dll"/>
+                                <ComboBoxItem Content="winhttp.dll"/>
+                                <ComboBoxItem Content="winmm.dll"/>
+                            </ComboBox>
+                            <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                       Text="version.dll为标准代理；dinput8/dxgi/winhttp/winmm为替代注入方式"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="INI 文件"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="选择要部署的 INI 配置文件"/>
+                            <ComboBox Style="{StaticResource ComboStyle}" 
+                                      SelectedValue="{Binding Settings.IniFileName, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      IsEditable="False"
+                                      ToolTip="可选：dlssg_sm86.ini(根目录)、sm86-default.ini、sm86-performance.ini(config/presets文件夹)">
+                                <ComboBoxItem Content="dlssg_sm86.ini"/>
+                                <ComboBoxItem Content="sm86-default.ini"/>
+                                <ComboBoxItem Content="sm86-performance.ini"/>
+                            </ComboBox>
+                            <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                       Text="dlssg_sm86.ini为自定义配置；sm86-default/performance为预设配置"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+            </WrapPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
