@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PlayniteDlssgPlugin.cs" />
+    <Compile Include="Localization.cs" />
     <Compile Include="PlayniteDlssgPluginSettings.cs" />
     <Compile Include="PlayniteDlssgPluginSettingsView.xaml.cs">
       <DependentUpon>PlayniteDlssgPluginSettingsView.xaml</DependentUpon>

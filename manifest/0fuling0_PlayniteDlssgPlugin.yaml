@@ -6,12 +6,14 @@ ShortDescription: Deploys DLSSG SM86 (version.dll + dlssg_sm86.ini) to game dire
 InstallerManifestUrl: https://raw.githubusercontent.com/0fuling0/PlayniteDlssgPlugin/master/manifest/installer.yaml
 SourceUrl: https://github.com/0fuling0/PlayniteDlssgPlugin
 Description: |
-  Playnite DLSSG Plugin deploys DLSSG SM86 files (version.dll + dlssg_sm86.ini) to game directories containing nvngx_dlssg.dll, enabling DLSS 3 Frame Generation on RTX 30/40 series GPUs for games that don't natively support it.
+  Playnite DLSSG Plugin deploys DLSSG SM86 files (version.dll + dlssg_sm86.ini) to game directories containing nvngx_dlssg.dll, enabling DLSS 3 Frame Generation on RTX 20/30 series GPUs for games that don't natively support it.
   
   Features:
   - Auto-detects games with DLSS 3 Frame Generation (nvngx_dlssg.dll)
   - One-click deployment of proxy DLL and INI config
-  - GPU auto-detection (RTX 20 -> SM75, RTX 30/40 -> SM86)
+  - One-click uninstall of previously deployed DLSSG files
+  - Localized UI: English (default) and Simplified Chinese
+  - GPU auto-detection (RTX 20 -> SM75, RTX 30 -> SM86)
   - Custom INI parameters: Router, KernelImage, HardwareBilinear, MaxGeneratedFrames, LogLevel
   - Multiple DLL injection methods: version.dll, dinput8.dll, dxgi.dll, winhttp.dll, winmm.dll
   - Responsive 3-column masonry settings layout

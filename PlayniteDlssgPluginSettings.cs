@@ -18,7 +18,7 @@ namespace PlayniteDlssgPlugin
         private string kernelImage = "PTX";
         private int hardwareBilinear;
         private int maxGeneratedFrames = 3;
-        private string releaseScope = "当前筛选结果";
+        private string releaseScope = "Filtered";
         private int logLevel = 1;
         private string customIniContent =
             "[Compatibility]\r\n" +
@@ -138,7 +138,22 @@ namespace PlayniteDlssgPlugin
                 Settings.SourceDirectory = "";
             }
 
+            // Migrate deploy scopes saved by versions that stored localized values.
+            if (Settings.ReleaseScope == "当前筛选结果")
+            {
+                Settings.ReleaseScope = "Filtered";
+            }
+            else if (Settings.ReleaseScope == "当前选中游戏")
+            {
+                Settings.ReleaseScope = "Selected";
+            }
+            else if (Settings.ReleaseScope == "全部游戏")
+            {
+                Settings.ReleaseScope = "All";
+            }
+
             ReleaseByConfigCommand = new RelayCommand(() => plugin.DeployUsingConfiguredScope());
+            UninstallByConfigCommand = new RelayCommand(() => plugin.UninstallUsingConfiguredScope());
             BrowseSourceDirectoryCommand = new RelayCommand(BrowseSourceDirectory);
         }
 
@@ -146,7 +161,7 @@ namespace PlayniteDlssgPlugin
         {
             var dialog = new System.Windows.Forms.FolderBrowserDialog
             {
-                Description = "选择 DLSSG 文件所在文件夹",
+                Description = Loc.Get("LocDlssgBrowseDialog"),
                 SelectedPath = Settings.SourceDirectory,
                 ShowNewFolderButton = false
             };
@@ -178,62 +193,63 @@ namespace PlayniteDlssgPlugin
             errors = new List<string>();
             if (string.IsNullOrWhiteSpace(Settings.SourceDirectory) || !Directory.Exists(Settings.SourceDirectory))
             {
-                errors.Add("源目录不存在");
+                errors.Add(Loc.Get("LocDlssgErrSourceMissing"));
             }
 
-            ValidateFileName(Settings.DllFileName, "DLL 文件", errors);
-            ValidateFileName(Settings.IniFileName, "INI 文件", errors);
+            ValidateFileName(Settings.DllFileName, "LocDlssgErrDllInvalid", errors);
+            ValidateFileName(Settings.IniFileName, "LocDlssgErrIniInvalid", errors);
             if (string.IsNullOrWhiteSpace(Settings.Router) ||
                 (Settings.Router != "SM86" && Settings.Router != "SM75"))
             {
-                errors.Add("Router 必须是 SM86 或 SM75");
+                errors.Add(Loc.Get("LocDlssgErrRouter"));
             }
 
             if (string.IsNullOrWhiteSpace(Settings.KernelImage) ||
                 (Settings.KernelImage != "PTX" && Settings.KernelImage != "Cubin" &&
                  Settings.KernelImage != "Auto"))
             {
-                errors.Add("KernelImage 必须是 PTX、Cubin 或 Auto");
+                errors.Add(Loc.Get("LocDlssgErrKernel"));
             }
 
             if (Settings.HardwareBilinear < 0 || Settings.HardwareBilinear > 1)
             {
-                errors.Add("HardwareBilinear 必须是 0 或 1");
+                errors.Add(Loc.Get("LocDlssgErrBilinear"));
             }
 
             if (Settings.MaxGeneratedFrames < 1 || Settings.MaxGeneratedFrames > 3)
             {
-                errors.Add("MaxGeneratedFrames 必须在 1 到 3 之间");
+                errors.Add(Loc.Get("LocDlssgErrMaxFrames"));
             }
 
             if (Settings.LogLevel < 0 || Settings.LogLevel > 3)
             {
-                errors.Add("LogLevel 必须在 0 到 3 之间");
+                errors.Add(Loc.Get("LocDlssgErrLogLevel"));
             }
 
-            if (Settings.ReleaseScope != "当前筛选结果" &&
-                Settings.ReleaseScope != "当前选中游戏" &&
-                Settings.ReleaseScope != "全部游戏")
+            if (Settings.ReleaseScope != "Filtered" &&
+                Settings.ReleaseScope != "Selected" &&
+                Settings.ReleaseScope != "All")
             {
-                errors.Add("释放范围无效");
+                errors.Add(Loc.Get("LocDlssgErrScope"));
             }
 
             if (Settings.UseCustomIni && string.IsNullOrWhiteSpace(Settings.CustomIniContent))
             {
-                errors.Add("启用自定义 INI 时，内容不能为空");
+                errors.Add(Loc.Get("LocDlssgErrCustomIni"));
             }
             return errors.Count == 0;
         }
 
         public ICommand ReleaseByConfigCommand { get; private set; }
+        public ICommand UninstallByConfigCommand { get; private set; }
         public ICommand BrowseSourceDirectoryCommand { get; private set; }
 
-        private static void ValidateFileName(string fileName, string label, List<string> errors)
+        private static void ValidateFileName(string fileName, string errorKey, List<string> errors)
         {
             if (string.IsNullOrWhiteSpace(fileName) || fileName.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0 ||
                 Path.GetFileName(fileName) != fileName)
             {
-                errors.Add(label + " 无效");
+                errors.Add(Loc.Get(errorKey));
             }
         }
     }

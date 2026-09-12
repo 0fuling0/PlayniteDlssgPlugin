@@ -9,7 +9,7 @@
              Name="SettingsView">
     <UserControl.Resources>
         <local:WidthToItemWidthConverter x:Key="WidthToItemWidthConverter"/>
-        
+
         <Style x:Key="PlaceholderTextBox" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
             <Style.Triggers>
                 <Trigger Property="Text" Value="">
@@ -17,7 +17,7 @@
                         <Setter.Value>
                             <VisualBrush Stretch="None" AlignmentX="Left" AlignmentY="Center">
                                 <VisualBrush.Visual>
-                                    <TextBlock Text="输入或选择路径" Foreground="Gray" Margin="4,0,0,0" FontSize="13"/>
+                                    <TextBlock Text="{DynamicResource LocDlssgPathPlaceholder}" Foreground="Gray" Margin="4,0,0,0" FontSize="13"/>
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Setter.Value>
@@ -28,7 +28,7 @@
                         <Setter.Value>
                             <VisualBrush Stretch="None" AlignmentX="Left" AlignmentY="Center">
                                 <VisualBrush.Visual>
-                                    <TextBlock Text="输入或选择路径" Foreground="Gray" Margin="4,0,0,0" FontSize="13"/>
+                                    <TextBlock Text="{DynamicResource LocDlssgPathPlaceholder}" Foreground="Gray" Margin="4,0,0,0" FontSize="13"/>
                                 </VisualBrush.Visual>
                             </VisualBrush>
                         </Setter.Value>
@@ -92,78 +92,83 @@
         </Style>
     </UserControl.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" 
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                   HorizontalContentAlignment="Stretch"
                   Name="MainScrollViewer">
         <StackPanel Margin="4">
             <StackPanel Margin="4,0,4,8">
-                <TextBlock FontSize="{DynamicResource FontSizeLarger}" FontWeight="Bold" Text="Playnite DLSSG Plugin 配置"
+                <TextBlock FontSize="{DynamicResource FontSizeLarger}" FontWeight="Bold" Text="{DynamicResource LocDlssgSettingsTitle}"
                            Foreground="{DynamicResource TextBrush}"/>
                 <TextBlock Margin="0,4,0,0" TextWrapping="Wrap" Opacity="0.7"
                            Foreground="{DynamicResource TextBrush}" FontSize="{DynamicResource FontSizeSmall}"
-                           Text="本插件释放文件来自 https://github.com/sdli1995/dlssg_for_sm86"/>
+                           Text="{DynamicResource LocDlssgSettingsSubtitle}"/>
             </StackPanel>
 
-            <WrapPanel x:Name="CardsPanel" 
-                       Orientation="Horizontal" 
+            <WrapPanel x:Name="CardsPanel"
+                       Orientation="Horizontal"
                        HorizontalAlignment="Center"
                        ItemWidth="{Binding ElementName=MainScrollViewer, Path=ActualWidth, Converter={StaticResource WidthToItemWidthConverter}}">
-                
+
                 <Border Style="{StaticResource TextBoxLikeCardBorder}">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource SectionTitle}" Text="释放操作"/>
-                        
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardDeploy}"/>
+
                         <StackPanel Margin="0,0,0,6">
-                            <TextBlock Style="{StaticResource SettingLabel}" Text="默认释放范围"/>
-                            <TextBlock Style="{StaticResource SettingDesc}" Text="选择点击释放文件时默认处理的游戏范围"/>
-                            <ComboBox Style="{StaticResource ComboStyle}" 
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgScopeLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgScopeDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
                                       SelectedValue="{Binding Settings.ReleaseScope, UpdateSourceTrigger=PropertyChanged}"
-                                      SelectedValuePath="Content"
-                                      ToolTip="当前筛选结果=列表筛选后游戏；当前选中游戏=手动选中；全部游戏=整个游戏库">
-                                <ComboBoxItem Content="当前筛选结果"/>
-                                <ComboBoxItem Content="当前选中游戏"/>
-                                <ComboBoxItem Content="全部游戏"/>
+                                      SelectedValuePath="Tag"
+                                      ToolTip="{DynamicResource LocDlssgScopeHelp}">
+                                <ComboBoxItem Content="{DynamicResource LocDlssgScopeFiltered}" Tag="Filtered"/>
+                                <ComboBoxItem Content="{DynamicResource LocDlssgScopeSelected}" Tag="Selected"/>
+                                <ComboBoxItem Content="{DynamicResource LocDlssgScopeAll}" Tag="All"/>
                             </ComboBox>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
-                                       Text="当前筛选结果=列表筛选后；当前选中游戏=手动选中；全部游戏=整个库"/>
+                                       Text="{DynamicResource LocDlssgScopeHelp}"/>
                         </StackPanel>
 
-                        <Button Style="{StaticResource NormalBtn}" Content="释放文件"
+                        <Button Style="{StaticResource NormalBtn}" Content="{DynamicResource LocDlssgBtnDeploy}"
                                 Command="{Binding ReleaseByConfigCommand}"
-                                ToolTip="使用当前配置和默认释放范围释放 DLL / INI 文件到目标游戏目录"/>
+                                ToolTip="{DynamicResource LocDlssgBtnDeployTip}"/>
                         <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
-                                   Text="点击上方按钮将按当前配置释放文件到目标游戏目录"/>
+                                   Text="{DynamicResource LocDlssgBtnDeployDesc}"/>
+                        <Button Style="{StaticResource NormalBtn}" Content="{DynamicResource LocDlssgBtnUninstall}"
+                                Command="{Binding UninstallByConfigCommand}"
+                                ToolTip="{DynamicResource LocDlssgBtnUninstallTip}"/>
+                        <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                   Text="{DynamicResource LocDlssgBtnUninstallDesc}"/>
                     </StackPanel>
                 </Border>
 
                 <Border Style="{StaticResource TextBoxLikeCardBorder}">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource SectionTitle}" Text="自定义 INI 配置"/>
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardIni}"/>
 
-                        <CheckBox Style="{StaticResource CheckStyle}" Content="使用自定义 INI 内容（下方选项生成)"
+                        <CheckBox Style="{StaticResource CheckStyle}" Content="{DynamicResource LocDlssgChkCustomIni}"
                                   IsChecked="{Binding Settings.UseCustomIni, UpdateSourceTrigger=PropertyChanged}"
-                                  ToolTip="启用后，插件会根据下方选项自动生成 INI 内容；禁用则直接复制源目录下选定的 INI 文件"/>
+                                  ToolTip="{DynamicResource LocDlssgChkCustomIniTip}"/>
 
                         <StackPanel Margin="0,6,0,0">
                             <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="Router（渲染架构）"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="SM86 = Ampere架构(RTX 30系)；SM75 = Turing架构(RTX 20系)"/>
-                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgRouterLabel}"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgRouterDesc}"/>
+                                <ComboBox Style="{StaticResource ComboStyle}"
                                           SelectedValue="{Binding Settings.Router, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedValuePath="Content"
-                                          ToolTip="SM86适用于RTX 30系；SM75适用于RTX 20系">
+                                          ToolTip="{DynamicResource LocDlssgRouterTip}">
                                     <ComboBoxItem Content="SM86"/>
                                     <ComboBoxItem Content="SM75"/>
                                 </ComboBox>
                             </StackPanel>
 
                             <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="KernelImage（内核镜像模式）"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="PTX=驱动JIT编译(兼容性最好)；Cubin=预编译二进制(需精确匹配GPU)；Auto=自动选择"/>
-                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgKernelLabel}"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgKernelDesc}"/>
+                                <ComboBox Style="{StaticResource ComboStyle}"
                                           SelectedValue="{Binding Settings.KernelImage, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedValuePath="Content"
-                                          ToolTip="PTX=驱动JIT编译(兼容性最好)；Cubin=预编译二进制；Auto=自动选择">
+                                          ToolTip="{DynamicResource LocDlssgKernelTip}">
                                     <ComboBoxItem Content="PTX"/>
                                     <ComboBoxItem Content="Cubin"/>
                                     <ComboBoxItem Content="Auto"/>
@@ -171,24 +176,24 @@
                             </StackPanel>
 
                             <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="HardwareBilinear（硬件双线性过滤）"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="0=关闭(精确输出，默认)；1=开启(近似采样，仅SM86/Ampere支持)"/>
-                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgBilinearLabel}"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgBilinearDesc}"/>
+                                <ComboBox Style="{StaticResource ComboStyle}"
                                           SelectedValue="{Binding Settings.HardwareBilinear, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedValuePath="Content"
-                                          ToolTip="0=精确输出(默认)；1=硬件近似双线性过滤，仅SM86支持">
+                                          ToolTip="{DynamicResource LocDlssgBilinearTip}">
                                     <ComboBoxItem Content="0"/>
                                     <ComboBoxItem Content="1"/>
                                 </ComboBox>
                             </StackPanel>
 
                             <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="MaxGeneratedFrames（最大生成帧数）"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="1=2X帧生成；2=3X；3=4X(上限，实际倍率由游戏决定)"/>
-                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgMaxFramesLabel}"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgMaxFramesDesc}"/>
+                                <ComboBox Style="{StaticResource ComboStyle}"
                                           SelectedValue="{Binding Settings.MaxGeneratedFrames, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedValuePath="Content"
-                                          ToolTip="帧生成倍率上限：1=2倍，2=3倍，3=4倍">
+                                          ToolTip="{DynamicResource LocDlssgMaxFramesTip}">
                                     <ComboBoxItem Content="1"/>
                                     <ComboBoxItem Content="2"/>
                                     <ComboBoxItem Content="3"/>
@@ -196,12 +201,12 @@
                             </StackPanel>
 
                             <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="LogLevel（日志等级）"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="0=关闭 1=仅错误 2=诊断信息 3=详细调试"/>
-                                <ComboBox Style="{StaticResource ComboStyle}" 
+                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgLogLevelLabel}"/>
+                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgLogLevelDesc}"/>
+                                <ComboBox Style="{StaticResource ComboStyle}"
                                           SelectedValue="{Binding Settings.LogLevel, UpdateSourceTrigger=PropertyChanged}"
                                           SelectedValuePath="Content"
-                                          ToolTip="0=关闭 1=仅错误 2=诊断信息 3=详细调试">
+                                          ToolTip="{DynamicResource LocDlssgLogLevelTip}">
                                     <ComboBoxItem Content="0"/>
                                     <ComboBoxItem Content="1"/>
                                     <ComboBoxItem Content="2"/>
@@ -214,33 +219,33 @@
 
                 <Border Style="{StaticResource TextBoxLikeCardBorder}">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource SectionTitle}" Text="文件路径设置"/>
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardPaths}"/>
 
                         <StackPanel Margin="0,6,0,0">
-                            <TextBlock Style="{StaticResource SettingLabel}" Text="源目录"/>
-                            <TextBlock Style="{StaticResource SettingDesc}" Text="DLSSG 文件所在文件夹（留空则使用插件内置资源）"/>
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgSourceDirLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgSourceDirDesc}"/>
                             <DockPanel Margin="0,3,0,0">
-                                <Button Content="浏览..." Width="50" Margin="0,0,6,0"
+                                <Button Content="{DynamicResource LocDlssgBtnBrowse}" Width="50" Margin="0,0,6,0"
                                         Command="{Binding BrowseSourceDirectoryCommand}"
-                                        ToolTip="选择包含 DLL 和 INI 文件的文件夹"/>
+                                        ToolTip="{DynamicResource LocDlssgBtnBrowseTip}"/>
                                 <TextBox Style="{StaticResource PlaceholderTextBox}"
                                          Text="{Binding Settings.SourceDirectory, UpdateSourceTrigger=PropertyChanged}"
-                                         ToolTip="输入或选择路径"/>
+                                         ToolTip="{DynamicResource LocDlssgPathPlaceholder}"/>
                             </DockPanel>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
-                                       Text="DLL来源：内置资源根目录(version.dll) 或 altnative文件夹(dinput8/dxgi/winhttp/winmm.dll)"/>
+                                       Text="{DynamicResource LocDlssgSourceDllHelp}"/>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
-                                       Text="INI来源：内置资源根目录(dlssg_sm86.ini) 或 config/presets(sm86-default/performance.ini)"/>
+                                       Text="{DynamicResource LocDlssgSourceIniHelp}"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,6,0,0">
-                            <TextBlock Style="{StaticResource SettingLabel}" Text="DLL 文件"/>
-                            <TextBlock Style="{StaticResource SettingDesc}" Text="选择要部署的 DLL 代理文件"/>
-                            <ComboBox Style="{StaticResource ComboStyle}" 
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgDllLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgDllDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
                                       SelectedValue="{Binding Settings.DllFileName, UpdateSourceTrigger=PropertyChanged}"
                                       SelectedValuePath="Content"
                                       IsEditable="False"
-                                      ToolTip="可选：version.dll(根目录)、dinput8.dll、dxgi.dll、winhttp.dll、winmm.dll(altnative文件夹)">
+                                      ToolTip="{DynamicResource LocDlssgDllTip}">
                                 <ComboBoxItem Content="version.dll"/>
                                 <ComboBoxItem Content="dinput8.dll"/>
                                 <ComboBoxItem Content="dxgi.dll"/>
@@ -248,23 +253,23 @@
                                 <ComboBoxItem Content="winmm.dll"/>
                             </ComboBox>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
-                                       Text="version.dll为标准代理；dinput8/dxgi/winhttp/winmm为替代注入方式"/>
+                                       Text="{DynamicResource LocDlssgDllHelp}"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,6,0,0">
-                            <TextBlock Style="{StaticResource SettingLabel}" Text="INI 文件"/>
-                            <TextBlock Style="{StaticResource SettingDesc}" Text="选择要部署的 INI 配置文件"/>
-                            <ComboBox Style="{StaticResource ComboStyle}" 
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgIniLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgIniDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
                                       SelectedValue="{Binding Settings.IniFileName, UpdateSourceTrigger=PropertyChanged}"
                                       SelectedValuePath="Content"
                                       IsEditable="False"
-                                      ToolTip="可选：dlssg_sm86.ini(根目录)、sm86-default.ini、sm86-performance.ini(config/presets文件夹)">
+                                      ToolTip="{DynamicResource LocDlssgIniTip}">
                                 <ComboBoxItem Content="dlssg_sm86.ini"/>
                                 <ComboBoxItem Content="sm86-default.ini"/>
                                 <ComboBoxItem Content="sm86-performance.ini"/>
                             </ComboBox>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
-                                       Text="dlssg_sm86.ini为自定义配置；sm86-default/performance为预设配置"/>
+                                       Text="{DynamicResource LocDlssgIniHelp}"/>
                         </StackPanel>
                     </StackPanel>
                 </Border>

@@ -96,28 +96,37 @@ namespace PlayniteDlssgPlugin
         {
             yield return new MainMenuItem
             {
-                Description = "配置 Playnite DLSSG 插件",
+                Description = Loc.Get("LocDlssgMenuConfigure"),
                 MenuSection = "@Playnite DLSSG Plugin",
                 Action = _ => PlayniteApi.MainView.OpenPluginSettings(Id)
             };
-            yield return CreateMainMenuItem("释放到当前筛选游戏", () => PlayniteApi.MainView.FilteredGames);
-            yield return CreateMainMenuItem("释放到当前选中游戏", () => PlayniteApi.MainView.SelectedGames);
-            yield return CreateMainMenuItem("释放到全部游戏", () => PlayniteApi.Database.Games);
+            yield return CreateMainMenuItem("LocDlssgMenuDeployFiltered", () => PlayniteApi.MainView.FilteredGames, false);
+            yield return CreateMainMenuItem("LocDlssgMenuDeploySelected", () => PlayniteApi.MainView.SelectedGames, false);
+            yield return CreateMainMenuItem("LocDlssgMenuDeployAll", () => PlayniteApi.Database.Games, false);
+            yield return CreateMainMenuItem("LocDlssgMenuUninstallFiltered", () => PlayniteApi.MainView.FilteredGames, true);
+            yield return CreateMainMenuItem("LocDlssgMenuUninstallSelected", () => PlayniteApi.MainView.SelectedGames, true);
+            yield return CreateMainMenuItem("LocDlssgMenuUninstallAll", () => PlayniteApi.Database.Games, true);
         }
 
         public override IEnumerable<GameMenuItem> GetGameMenuItems(GetGameMenuItemsArgs args)
         {
             yield return new GameMenuItem
             {
-                Description = "配置 Playnite DLSSG 插件",
+                Description = Loc.Get("LocDlssgMenuConfigure"),
                 MenuSection = "Playnite DLSSG Plugin",
                 Action = _ => PlayniteApi.MainView.OpenPluginSettings(Id)
             };
             yield return new GameMenuItem
             {
-                Description = "释放 DLSSG 文件",
+                Description = Loc.Get("LocDlssgGameDeploy"),
                 MenuSection = "Playnite DLSSG Plugin",
                 Action = actionArgs => DeployToGames(actionArgs.Games)
+            };
+            yield return new GameMenuItem
+            {
+                Description = Loc.Get("LocDlssgGameUninstall"),
+                MenuSection = "Playnite DLSSG Plugin",
+                Action = actionArgs => UninstallFromGames(actionArgs.Games)
             };
         }
 
@@ -130,7 +139,7 @@ namespace PlayniteDlssgPlugin
         {
             yield return new SidebarItem
             {
-                Title = "DLSSG 设置",
+                Title = Loc.Get("LocDlssgSidebarTitle"),
                 Type = SiderbarItemType.View,
                 Icon = new Grid
                 {
@@ -171,23 +180,33 @@ namespace PlayniteDlssgPlugin
             return view;
         }
 
-        private MainMenuItem CreateMainMenuItem(string description, Func<IEnumerable<Game>> gameSource)
+        private MainMenuItem CreateMainMenuItem(string descriptionKey, Func<IEnumerable<Game>> gameSource, bool uninstall)
         {
             return new MainMenuItem
             {
-                Description = description,
+                Description = Loc.Get(descriptionKey),
                 MenuSection = "@Playnite DLSSG Plugin",
-                Action = _ => DeployToGames(gameSource())
+                Action = _ =>
+                {
+                    if (uninstall)
+                    {
+                        UninstallFromGames(gameSource());
+                    }
+                    else
+                    {
+                        DeployToGames(gameSource());
+                    }
+                }
             };
         }
 
         public void DeployUsingConfiguredScope()
         {
-            if (settings.Settings.ReleaseScope == "当前选中游戏")
+            if (settings.Settings.ReleaseScope == "Selected")
             {
                 DeployToGames(PlayniteApi.MainView.SelectedGames);
             }
-            else if (settings.Settings.ReleaseScope == "全部游戏")
+            else if (settings.Settings.ReleaseScope == "All")
             {
                 DeployToGames(PlayniteApi.Database.Games);
             }
@@ -197,15 +216,36 @@ namespace PlayniteDlssgPlugin
             }
         }
 
-        private void DeployToGames(IEnumerable<Game> sourceGames)
+        public void UninstallUsingConfiguredScope()
         {
-            var games = sourceGames == null
+            if (settings.Settings.ReleaseScope == "Selected")
+            {
+                UninstallFromGames(PlayniteApi.MainView.SelectedGames);
+            }
+            else if (settings.Settings.ReleaseScope == "All")
+            {
+                UninstallFromGames(PlayniteApi.Database.Games);
+            }
+            else
+            {
+                UninstallFromGames(PlayniteApi.MainView.FilteredGames);
+            }
+        }
+
+        private List<Game> DeduplicateGames(IEnumerable<Game> sourceGames)
+        {
+            return sourceGames == null
                 ? new List<Game>()
                 : sourceGames.Where(game => game != null).GroupBy(game => game.Id).Select(group => group.First()).ToList();
+        }
+
+        private void DeployToGames(IEnumerable<Game> sourceGames)
+        {
+            var games = DeduplicateGames(sourceGames);
 
             if (games.Count == 0)
             {
-                PlayniteApi.Dialogs.ShowMessage("没有可部署的游戏", "DLSSG SM86");
+                PlayniteApi.Dialogs.ShowMessage(Loc.Get("LocDlssgNoDeployGames"), Loc.Get("LocDlssgTitle"));
                 return;
             }
 
@@ -277,29 +317,37 @@ namespace PlayniteDlssgPlugin
 
             if (!File.Exists(sourceDll) || (customIni == null && !File.Exists(sourceIni)))
             {
-                PlayniteApi.Dialogs.ShowErrorMessage(
-                    "源文件不存在，请在设置中检查源目录和文件名\n\n" +
-                    "DLL: " + (sourceDll ?? "未找到") + (customIni == null ? "\nINI: " + (sourceIni ?? "未找到") : ""),
-                    "DLSSG SM86");
+                var message = string.Format(Loc.Get("LocDlssgSourceMissing"), sourceDll ?? Loc.Get("LocDlssgNotFound"));
+                if (customIni == null)
+                {
+                    message += "\n" + string.Format(Loc.Get("LocDlssgIniLine"), sourceIni ?? Loc.Get("LocDlssgNotFound"));
+                }
+                PlayniteApi.Dialogs.ShowErrorMessage(message, Loc.Get("LocDlssgTitle"));
                 return;
             }
 
             var confirmation = PlayniteApi.Dialogs.ShowMessage(
-                string.Format("将向 {0} 个游戏释放 DLSSG 文件，并覆盖目标中的同名文件。是否继续？", games.Count),
-                "DLSSG SM86");
+                string.Format(Loc.Get("LocDlssgDeployConfirm"), games.Count),
+                Loc.Get("LocDlssgTitle"));
 
             if (confirmation != MessageBoxResult.OK)
             {
                 return;
             }
 
+            // Resolve localized strings up front: the progress action runs on a
+            // background thread and cannot touch Application resources safely.
+            var failNoInstallDir = Loc.Get("LocDlssgFailNoInstallDir");
+            var failNoTargetDir = Loc.Get("LocDlssgFailNoTargetDir");
+
             DeploymentSummary summary = null;
             PlayniteApi.Dialogs.ActivateGlobalProgress(
                 progressArgs =>
                 {
-                    summary = DeployFiles(games, sourceDll, sourceIni, customIni, progressArgs);
+                    summary = DeployFiles(games, dllFileName, iniFileName, sourceDll, sourceIni, customIni,
+                        failNoInstallDir, failNoTargetDir, progressArgs);
                 },
-                new GlobalProgressOptions("正在部署 DLSSG SM86 文件")
+                new GlobalProgressOptions(Loc.Get("LocDlssgDeployProgress"))
                 {
                     IsIndeterminate = false,
                     Cancelable = true
@@ -307,15 +355,19 @@ namespace PlayniteDlssgPlugin
 
             if (summary != null)
             {
-                PlayniteApi.Dialogs.ShowMessage(summary.ToString(), "DLSSG SM86 部署结果");
+                PlayniteApi.Dialogs.ShowMessage(summary.ToString(), Loc.Get("LocDlssgDeployResultTitle"));
             }
         }
 
         private DeploymentSummary DeployFiles(
             IReadOnlyList<Game> games,
+            string dllFileName,
+            string iniFileName,
             string sourceDll,
             string sourceIni,
             string customIni,
+            string failNoInstallDir,
+            string failNoTargetDir,
             GlobalProgressActionArgs progressArgs)
         {
             var summary = new DeploymentSummary();
@@ -333,14 +385,14 @@ namespace PlayniteDlssgPlugin
 
                 if (string.IsNullOrWhiteSpace(game.InstallDirectory) || !Directory.Exists(game.InstallDirectory))
                 {
-                    summary.AddFailure(game.Name, "没有有效的安装目录");
+                    summary.AddFailure(game.Name, failNoInstallDir);
                     continue;
                 }
 
                 var targets = FindTargetDirectories(game.InstallDirectory).ToList();
                 if (targets.Count == 0)
                 {
-                    summary.AddFailure(game.Name, "未找到包含 nvngx_dlssg.dll 的目录");
+                    summary.AddFailure(game.Name, failNoTargetDir);
                     continue;
                 }
 
@@ -348,8 +400,22 @@ namespace PlayniteDlssgPlugin
                 {
                     try
                     {
-                        File.Copy(sourceDll, Path.Combine(target, Path.GetFileName(sourceDll)), true);
-                        var targetIni = Path.Combine(target, Path.GetFileName(sourceIni));
+                        var targetDll = Path.Combine(target, dllFileName);
+                        var targetIni = Path.Combine(target, iniFileName);
+
+                        // Remove previously deployed files first, then copy the new ones.
+                        if (File.Exists(targetDll))
+                        {
+                            File.Delete(targetDll);
+                            summary.DeletedFiles++;
+                        }
+                        File.Copy(sourceDll, targetDll, true);
+
+                        if (File.Exists(targetIni))
+                        {
+                            File.Delete(targetIni);
+                            summary.DeletedFiles++;
+                        }
                         if (customIni == null)
                         {
                             File.Copy(sourceIni, targetIni, true);
@@ -363,6 +429,123 @@ namespace PlayniteDlssgPlugin
                     catch (Exception ex)
                     {
                         logger.Error(ex, "Failed to deploy files to " + target);
+                        summary.AddFailure(game.Name, target + ": " + ex.Message);
+                    }
+                }
+                if (!summary.HasFailureForGame(game.Name))
+                {
+                    summary.AddSuccess(game.Name);
+                }
+            }
+
+            progressArgs.CurrentProgressValue = 100;
+            return summary;
+        }
+
+        private void UninstallFromGames(IEnumerable<Game> sourceGames)
+        {
+            var games = DeduplicateGames(sourceGames);
+
+            if (games.Count == 0)
+            {
+                PlayniteApi.Dialogs.ShowMessage(Loc.Get("LocDlssgNoUninstallGames"), Loc.Get("LocDlssgTitle"));
+                return;
+            }
+
+            var confirmation = PlayniteApi.Dialogs.ShowMessage(
+                string.Format(Loc.Get("LocDlssgUninstallConfirm"), games.Count),
+                Loc.Get("LocDlssgTitle"));
+
+            if (confirmation != MessageBoxResult.OK)
+            {
+                return;
+            }
+
+            var failNoInstallDir = Loc.Get("LocDlssgFailNoInstallDir");
+            var failNoDeployedFiles = Loc.Get("LocDlssgFailNoDeployedFiles");
+
+            DeploymentSummary summary = null;
+            PlayniteApi.Dialogs.ActivateGlobalProgress(
+                progressArgs =>
+                {
+                    summary = UninstallFiles(games, failNoInstallDir, failNoDeployedFiles, progressArgs);
+                },
+                new GlobalProgressOptions(Loc.Get("LocDlssgUninstallProgress"))
+                {
+                    IsIndeterminate = false,
+                    Cancelable = true
+                });
+
+            if (summary != null)
+            {
+                PlayniteApi.Dialogs.ShowMessage(summary.ToString(), Loc.Get("LocDlssgUninstallResultTitle"));
+            }
+        }
+
+        private DeploymentSummary UninstallFiles(
+            IReadOnlyList<Game> games,
+            string failNoInstallDir,
+            string failNoDeployedFiles,
+            GlobalProgressActionArgs progressArgs)
+        {
+            var dllFileName = settings.Settings.DllFileName;
+            var iniFileName = settings.Settings.IniFileName;
+            var summary = new DeploymentSummary { UninstallMode = true };
+
+            for (var index = 0; index < games.Count; index++)
+            {
+                if (progressArgs.CancelToken.IsCancellationRequested)
+                {
+                    summary.Cancelled = true;
+                    break;
+                }
+
+                var game = games[index];
+                progressArgs.CurrentProgressValue = (index * 100) / games.Count;
+                progressArgs.Text = game.Name;
+
+                if (string.IsNullOrWhiteSpace(game.InstallDirectory) || !Directory.Exists(game.InstallDirectory))
+                {
+                    summary.AddFailure(game.Name, failNoInstallDir);
+                    continue;
+                }
+
+                var targets = FindUninstallTargetDirectories(game.InstallDirectory, dllFileName, iniFileName).ToList();
+                if (targets.Count == 0)
+                {
+                    summary.AddFailure(game.Name, failNoDeployedFiles);
+                    continue;
+                }
+
+                foreach (var target in targets)
+                {
+                    try
+                    {
+                        var removedAny = false;
+                        var targetDll = Path.Combine(target, dllFileName);
+                        if (File.Exists(targetDll))
+                        {
+                            File.Delete(targetDll);
+                            summary.DeletedFiles++;
+                            removedAny = true;
+                        }
+
+                        var targetIni = Path.Combine(target, iniFileName);
+                        if (File.Exists(targetIni))
+                        {
+                            File.Delete(targetIni);
+                            summary.DeletedFiles++;
+                            removedAny = true;
+                        }
+
+                        if (removedAny)
+                        {
+                            summary.CopiedDirectories++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, "Failed to remove files from " + target);
                         summary.AddFailure(game.Name, target + ": " + ex.Message);
                     }
                 }
@@ -410,12 +593,53 @@ namespace PlayniteDlssgPlugin
             }
         }
 
+        private IEnumerable<string> FindUninstallTargetDirectories(string root, string dllFileName, string iniFileName)
+        {
+            var directories = new Stack<string>();
+            directories.Push(root);
+            while (directories.Count > 0)
+            {
+                var directory = directories.Pop();
+                string[] files;
+                try
+                {
+                    files = Directory.GetFiles(directory);
+                    foreach (var child in Directory.GetDirectories(directory))
+                    {
+                        directories.Push(child);
+                    }
+                }
+                catch (UnauthorizedAccessException ex)
+                {
+                    logger.Warn(ex, "Cannot access directory " + directory);
+                    continue;
+                }
+                catch (IOException ex)
+                {
+                    logger.Warn(ex, "Cannot enumerate directory " + directory);
+                    continue;
+                }
+
+                if (files.Any(file =>
+                {
+                    var fileName = Path.GetFileName(file);
+                    return string.Equals(fileName, dllFileName, StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(fileName, iniFileName, StringComparison.OrdinalIgnoreCase);
+                }))
+                {
+                    yield return directory;
+                }
+            }
+        }
+
         private sealed class DeploymentSummary
         {
             private readonly List<string> failures = new List<string>();
             private readonly List<string> successes = new List<string>();
 
             public int CopiedDirectories { get; set; }
+            public int DeletedFiles { get; set; }
+            public bool UninstallMode { get; set; }
             public bool Cancelled { get; set; }
 
             public void AddSuccess(string game)
@@ -436,32 +660,38 @@ namespace PlayniteDlssgPlugin
             public override string ToString()
             {
                 var builder = new StringBuilder();
-                builder.AppendLine("成功处理游戏: " + successes.Count);
-                builder.AppendLine("失败游戏: " + failures.Count);
-                builder.AppendLine("成功处理目标目录: " + CopiedDirectories);
+                builder.AppendLine(string.Format(Loc.Get("LocDlssgSummarySucceededGames"), successes.Count));
+                builder.AppendLine(string.Format(Loc.Get("LocDlssgSummaryFailedGames"), failures.Count));
+                builder.AppendLine(string.Format(
+                    Loc.Get(UninstallMode ? "LocDlssgSummaryDirsUninstall" : "LocDlssgSummaryDirsDeploy"),
+                    CopiedDirectories));
+                if (UninstallMode)
+                {
+                    builder.AppendLine(string.Format(Loc.Get("LocDlssgSummaryDeletedFiles"), DeletedFiles));
+                }
                 if (Cancelled)
                 {
-                    builder.AppendLine("操作已取消");
+                    builder.AppendLine(Loc.Get("LocDlssgSummaryCancelled"));
                 }
 
                 if (successes.Count > 0)
                 {
                     builder.AppendLine();
-                    builder.AppendLine("=== 成功 ===");
+                    builder.AppendLine(Loc.Get("LocDlssgSummarySuccessHeader"));
                     foreach (var success in successes.Take(30))
                     {
                         builder.AppendLine(" ✓ " + success);
                     }
                     if (successes.Count > 30)
                     {
-                        builder.AppendLine("  其余 " + (successes.Count - 30) + " 项未显示");
+                        builder.AppendLine(string.Format(Loc.Get("LocDlssgSummaryMore"), successes.Count - 30));
                     }
                 }
 
                 if (failures.Count > 0)
                 {
                     builder.AppendLine();
-                    builder.AppendLine("=== 失败 ===");
+                    builder.AppendLine(Loc.Get("LocDlssgSummaryFailHeader"));
                     foreach (var failure in failures.Take(30))
                     {
                         builder.AppendLine(" ✗ " + failure);
@@ -469,7 +699,7 @@ namespace PlayniteDlssgPlugin
 
                     if (failures.Count > 30)
                     {
-                        builder.AppendLine("其余 " + (failures.Count - 30) + " 项未显示");
+                        builder.AppendLine(string.Format(Loc.Get("LocDlssgSummaryMore"), failures.Count - 30));
                     }
                 }
 

@@ -2,4 +2,111 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <!-- Common -->
+    <sys:String x:Key="LocDlssgTitle">DLSSG SM86</sys:String>
+    <sys:String x:Key="LocDlssgNoDeployGames">No games available to deploy.</sys:String>
+    <sys:String x:Key="LocDlssgNoUninstallGames">No games available to uninstall.</sys:String>
+    <sys:String x:Key="LocDlssgSourceMissing">Source files not found. Please check the source directory and file names in plugin settings.&#10;&#10;DLL: {0}</sys:String>
+    <sys:String x:Key="LocDlssgIniLine">INI: {0}</sys:String>
+    <sys:String x:Key="LocDlssgNotFound">Not found</sys:String>
+    <sys:String x:Key="LocDlssgDeployConfirm">DLSSG files will be deployed to {0} game(s), and files with the same names in the targets will be overwritten. Continue?</sys:String>
+    <sys:String x:Key="LocDlssgDeployProgress">Deploying DLSSG files...</sys:String>
+    <sys:String x:Key="LocDlssgDeployResultTitle">DLSSG Deploy Result</sys:String>
+    <sys:String x:Key="LocDlssgUninstallConfirm">Previously deployed DLSSG files will be removed from {0} game(s). Continue?</sys:String>
+    <sys:String x:Key="LocDlssgUninstallProgress">Removing DLSSG files...</sys:String>
+    <sys:String x:Key="LocDlssgUninstallResultTitle">DLSSG Uninstall Result</sys:String>
+    <sys:String x:Key="LocDlssgFailNoInstallDir">No valid install directory</sys:String>
+    <sys:String x:Key="LocDlssgFailNoTargetDir">No directory containing nvngx_dlssg.dll was found</sys:String>
+    <sys:String x:Key="LocDlssgFailNoDeployedFiles">No previously deployed DLSSG files were found</sys:String>
+
+    <!-- Result summary -->
+    <sys:String x:Key="LocDlssgSummarySucceededGames">Succeeded games: {0}</sys:String>
+    <sys:String x:Key="LocDlssgSummaryFailedGames">Failed games: {0}</sys:String>
+    <sys:String x:Key="LocDlssgSummaryDirsDeploy">Target directories processed: {0}</sys:String>
+    <sys:String x:Key="LocDlssgSummaryDirsUninstall">Directories cleaned: {0}</sys:String>
+    <sys:String x:Key="LocDlssgSummaryDeletedFiles">Files deleted: {0}</sys:String>
+    <sys:String x:Key="LocDlssgSummaryCancelled">Operation cancelled.</sys:String>
+    <sys:String x:Key="LocDlssgSummarySuccessHeader">=== Succeeded ===</sys:String>
+    <sys:String x:Key="LocDlssgSummaryFailHeader">=== Failed ===</sys:String>
+    <sys:String x:Key="LocDlssgSummaryMore">({0} more entries not shown)</sys:String>
+
+    <!-- Menus -->
+    <sys:String x:Key="LocDlssgMenuConfigure">Configure Playnite DLSSG Plugin</sys:String>
+    <sys:String x:Key="LocDlssgMenuDeployFiltered">Deploy to Filtered Games</sys:String>
+    <sys:String x:Key="LocDlssgMenuDeploySelected">Deploy to Selected Games</sys:String>
+    <sys:String x:Key="LocDlssgMenuDeployAll">Deploy to All Games</sys:String>
+    <sys:String x:Key="LocDlssgGameDeploy">Deploy DLSSG Files</sys:String>
+    <sys:String x:Key="LocDlssgMenuUninstallFiltered">Uninstall from Filtered Games</sys:String>
+    <sys:String x:Key="LocDlssgMenuUninstallSelected">Uninstall from Selected Games</sys:String>
+    <sys:String x:Key="LocDlssgMenuUninstallAll">Uninstall from All Games</sys:String>
+    <sys:String x:Key="LocDlssgGameUninstall">Uninstall DLSSG Files</sys:String>
+    <sys:String x:Key="LocDlssgSidebarTitle">DLSSG Settings</sys:String>
+
+    <!-- Settings view -->
+    <sys:String x:Key="LocDlssgSettingsTitle">Playnite DLSSG Plugin Settings</sys:String>
+    <sys:String x:Key="LocDlssgSettingsSubtitle">Files deployed by this plugin come from https://github.com/sdli1995/dlssg_for_sm86</sys:String>
+
+    <sys:String x:Key="LocDlssgCardDeploy">Deploy &amp; Uninstall Actions</sys:String>
+    <sys:String x:Key="LocDlssgScopeLabel">Default deploy scope</sys:String>
+    <sys:String x:Key="LocDlssgScopeDesc">Which games are processed when using the deploy / uninstall buttons below</sys:String>
+    <sys:String x:Key="LocDlssgScopeFiltered">Filtered games</sys:String>
+    <sys:String x:Key="LocDlssgScopeSelected">Selected games</sys:String>
+    <sys:String x:Key="LocDlssgScopeAll">All games</sys:String>
+    <sys:String x:Key="LocDlssgScopeHelp">Filtered = games remaining after filtering; Selected = games selected in the list; All = the whole library</sys:String>
+    <sys:String x:Key="LocDlssgBtnDeploy">Deploy Files</sys:String>
+    <sys:String x:Key="LocDlssgBtnDeployTip">Deploy the DLL / INI files to target game directories using the current settings</sys:String>
+    <sys:String x:Key="LocDlssgBtnDeployDesc">Clicking the button above deploys files to the target game directories based on the current settings</sys:String>
+    <sys:String x:Key="LocDlssgBtnUninstall">Uninstall Files</sys:String>
+    <sys:String x:Key="LocDlssgBtnUninstallTip">Remove previously deployed DLL / INI files from target game directories</sys:String>
+    <sys:String x:Key="LocDlssgBtnUninstallDesc">Clicking the button above removes previously deployed files from the target game directories</sys:String>
+
+    <sys:String x:Key="LocDlssgCardIni">Custom INI Configuration</sys:String>
+    <sys:String x:Key="LocDlssgChkCustomIni">Use custom INI content (generated from options below)</sys:String>
+    <sys:String x:Key="LocDlssgChkCustomIniTip">When enabled, INI content is generated from the options below; when disabled, the selected INI file from the source directory is copied as-is</sys:String>
+    <sys:String x:Key="LocDlssgRouterLabel">Router (rendering architecture)</sys:String>
+    <sys:String x:Key="LocDlssgRouterDesc">SM86 = Ampere architecture (RTX 30 series); SM75 = Turing architecture (RTX 20 series)</sys:String>
+    <sys:String x:Key="LocDlssgRouterTip">SM86 for RTX 30 series; SM75 for RTX 20 series</sys:String>
+    <sys:String x:Key="LocDlssgKernelLabel">KernelImage (kernel image mode)</sys:String>
+    <sys:String x:Key="LocDlssgKernelDesc">PTX = driver JIT compilation (best compatibility); Cubin = precompiled binary (exact GPU match required); Auto = choose automatically</sys:String>
+    <sys:String x:Key="LocDlssgKernelTip">PTX = driver JIT compilation (best compatibility); Cubin = precompiled binary; Auto = choose automatically</sys:String>
+    <sys:String x:Key="LocDlssgBilinearLabel">HardwareBilinear (hardware bilinear filtering)</sys:String>
+    <sys:String x:Key="LocDlssgBilinearDesc">0 = off (exact output, default); 1 = on (approximate sampling, SM86/Ampere only)</sys:String>
+    <sys:String x:Key="LocDlssgBilinearTip">0 = exact output (default); 1 = approximate hardware bilinear filtering, SM86 only</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesLabel">MaxGeneratedFrames (max generated frames)</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesDesc">1 = 2X frame generation; 2 = 3X; 3 = 4X (upper limit; the actual multiplier is decided by the game)</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesTip">Frame generation multiplier limit: 1 = 2X, 2 = 3X, 3 = 4X</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelLabel">LogLevel (logging level)</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelDesc">0 = off; 1 = errors only; 2 = diagnostics; 3 = verbose</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelTip">0 = off; 1 = errors only; 2 = diagnostics; 3 = verbose</sys:String>
+
+    <sys:String x:Key="LocDlssgCardPaths">File Path Settings</sys:String>
+    <sys:String x:Key="LocDlssgSourceDirLabel">Source directory</sys:String>
+    <sys:String x:Key="LocDlssgSourceDirDesc">Folder containing the DLSSG files (leave empty to use the files bundled with the plugin)</sys:String>
+    <sys:String x:Key="LocDlssgBtnBrowse">Browse...</sys:String>
+    <sys:String x:Key="LocDlssgBtnBrowseTip">Select the folder containing the DLL and INI files</sys:String>
+    <sys:String x:Key="LocDlssgPathPlaceholder">Type or select a path</sys:String>
+    <sys:String x:Key="LocDlssgSourceDllHelp">DLL source: bundled root (version.dll) or the altnative folder (dinput8/dxgi/winhttp/winmm.dll)</sys:String>
+    <sys:String x:Key="LocDlssgSourceIniHelp">INI source: bundled root (dlssg_sm86.ini) or config/presets (sm86-default/performance.ini)</sys:String>
+    <sys:String x:Key="LocDlssgDllLabel">DLL file</sys:String>
+    <sys:String x:Key="LocDlssgDllDesc">Proxy DLL to deploy</sys:String>
+    <sys:String x:Key="LocDlssgDllTip">Options: version.dll (root); dinput8.dll, dxgi.dll, winhttp.dll, winmm.dll (altnative folder)</sys:String>
+    <sys:String x:Key="LocDlssgDllHelp">version.dll is the standard proxy; dinput8/dxgi/winhttp/winmm are alternative injection methods</sys:String>
+    <sys:String x:Key="LocDlssgIniLabel">INI file</sys:String>
+    <sys:String x:Key="LocDlssgIniDesc">INI configuration to deploy</sys:String>
+    <sys:String x:Key="LocDlssgIniTip">Options: dlssg_sm86.ini (root); sm86-default.ini, sm86-performance.ini (config/presets folder)</sys:String>
+    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini is the custom configuration; sm86-default/performance are preset configurations</sys:String>
+    <sys:String x:Key="LocDlssgBrowseDialog">Select the folder containing DLSSG files</sys:String>
+
+    <!-- Settings validation -->
+    <sys:String x:Key="LocDlssgErrSourceMissing">Source directory does not exist</sys:String>
+    <sys:String x:Key="LocDlssgErrDllInvalid">DLL file name is invalid</sys:String>
+    <sys:String x:Key="LocDlssgErrIniInvalid">INI file name is invalid</sys:String>
+    <sys:String x:Key="LocDlssgErrRouter">Router must be SM86 or SM75</sys:String>
+    <sys:String x:Key="LocDlssgErrKernel">KernelImage must be PTX, Cubin or Auto</sys:String>
+    <sys:String x:Key="LocDlssgErrBilinear">HardwareBilinear must be 0 or 1</sys:String>
+    <sys:String x:Key="LocDlssgErrMaxFrames">MaxGeneratedFrames must be between 1 and 3</sys:String>
+    <sys:String x:Key="LocDlssgErrLogLevel">LogLevel must be between 0 and 3</sys:String>
+    <sys:String x:Key="LocDlssgErrScope">Deploy scope is invalid</sys:String>
+    <sys:String x:Key="LocDlssgErrCustomIni">Custom INI content cannot be empty when enabled</sys:String>
 </ResourceDictionary>
