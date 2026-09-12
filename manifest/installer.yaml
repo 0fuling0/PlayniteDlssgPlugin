@@ -1,7 +1,7 @@
 AddonId: 'PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513'
 Packages:
   - Version: 1.1
-    RequiredApiVersion: 10.0.0
+    RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-09-12
     PackageUrl: 'https://github.com/0fuling0/PlayniteDlssgPlugin/releases/download/v1.1/PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513_1_1.pext'
     Changelog:
@@ -9,7 +9,7 @@ Packages:
       - Uninstall feature to remove previously deployed DLSSG files (main menu, game menu and settings)
       - Deploy now deletes previously deployed DLL/INI files before copying new ones
   - Version: 1.0
-    RequiredApiVersion: 10.0.0
+    RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-09-11
     PackageUrl: 'https://github.com/0fuling0/PlayniteDlssgPlugin/releases/download/v1.0/PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513_1_0.pext'
     Changelog:
