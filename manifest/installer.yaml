@@ -1,5 +1,14 @@
 AddonId: 'PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513'
 Packages:
+  - Version: 1.2
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-09-13
+    PackageUrl: 'https://github.com/0fuling0/PlayniteDlssgPlugin/releases/download/v1.2/PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513_1_2.pext'
+    Changelog:
+      - Updated bundled dlssg_for_sm86 to 0.3.1 (RTX 20 series frame generation works again; 4X factory default; tolerant INI parsing)
+      - Removed GPU detection from the plugin - the new runtime selects the kernel family automatically, Router option removed
+      - Removed winhttp.dll proxy option; added dbghelp.dll and d3d12.dll alternatives
+      - Removed preset INI files; the factory dlssg_sm86.ini is used, MaxGeneratedFrames can now go up to 5 (6X)
   - Version: 1.1
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-09-12

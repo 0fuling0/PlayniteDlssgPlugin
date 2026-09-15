@@ -14,7 +14,6 @@ namespace PlayniteDlssgPlugin
         private string dllFileName = "version.dll";
         private string iniFileName = "dlssg_sm86.ini";
         private bool useCustomIni = true;
-        private string router = "SM86";
         private string kernelImage = "PTX";
         private int hardwareBilinear;
         private int maxGeneratedFrames = 3;
@@ -22,15 +21,14 @@ namespace PlayniteDlssgPlugin
         private int logLevel = 1;
         private string customIniContent =
             "[Compatibility]\r\n" +
-            "; SM86 for Ampere; SM75 for Turing or SM75 forward-JIT testing.\r\n" +
-            "Router=SM86\r\n" +
-            "; PTX uses driver JIT. Cubin requires an exact GPU/Router match.\r\n" +
+            "; The kernel family is selected automatically for the physical GPU (SM86/SM75).\r\n" +
+            "; PTX uses driver JIT. Cubin requires an exact GPU match.\r\n" +
             "; Auto selects Cubin on an exact match, otherwise PTX.\r\n" +
             "KernelImage=PTX\r\n" +
             "; 0 = exact output (default); 1 = optional approximate sampling, SM86 only.\r\n" +
             "HardwareBilinear=0\r\n\r\n" +
             "[FrameGeneration]\r\n" +
-            "; Capability limit: 1=2X, 2=3X, 3=4X. The game requests the actual multiplier.\r\n" +
+            "; Capability limit: 1=2X, 2=3X, 3=4X, 5=6X. The game requests the actual multiplier.\r\n" +
             "MaxGeneratedFrames=3\r\n\r\n" +
             "[Logging]\r\n" +
             "; 0=off, 1=errors, 2=diagnostics, 3=verbose.\r\n" +
@@ -58,12 +56,6 @@ namespace PlayniteDlssgPlugin
         {
             get { return useCustomIni; }
             set { SetValue(ref useCustomIni, value); }
-        }
-
-        public string Router
-        {
-            get { return router; }
-            set { SetValue(ref router, value); }
         }
 
         public string KernelImage
@@ -105,7 +97,6 @@ namespace PlayniteDlssgPlugin
         public string BuildCustomIniContent()
         {
             return "[Compatibility]\r\n" +
-                "Router=" + Router + "\r\n" +
                 "KernelImage=" + KernelImage + "\r\n" +
                 "HardwareBilinear=" + HardwareBilinear + "\r\n\r\n" +
                 "[FrameGeneration]\r\n" +
@@ -136,6 +127,17 @@ namespace PlayniteDlssgPlugin
             if (Settings.SourceDirectory == @"D:\Download\dlssg_for_sm86-main")
             {
                 Settings.SourceDirectory = "";
+            }
+
+            // dlssg_for_sm86 0.3.1 renamed altnative/ to alternatives/, dropped
+            // winhttp.dll and the preset INIs, and picks the kernel family itself.
+            if (Settings.DllFileName == "winhttp.dll")
+            {
+                Settings.DllFileName = "version.dll";
+            }
+            if (Settings.IniFileName != "dlssg_sm86.ini")
+            {
+                Settings.IniFileName = "dlssg_sm86.ini";
             }
 
             // Migrate deploy scopes saved by versions that stored localized values.
@@ -198,11 +200,6 @@ namespace PlayniteDlssgPlugin
 
             ValidateFileName(Settings.DllFileName, "LocDlssgErrDllInvalid", errors);
             ValidateFileName(Settings.IniFileName, "LocDlssgErrIniInvalid", errors);
-            if (string.IsNullOrWhiteSpace(Settings.Router) ||
-                (Settings.Router != "SM86" && Settings.Router != "SM75"))
-            {
-                errors.Add(Loc.Get("LocDlssgErrRouter"));
-            }
 
             if (string.IsNullOrWhiteSpace(Settings.KernelImage) ||
                 (Settings.KernelImage != "PTX" && Settings.KernelImage != "Cubin" &&
@@ -216,7 +213,7 @@ namespace PlayniteDlssgPlugin
                 errors.Add(Loc.Get("LocDlssgErrBilinear"));
             }
 
-            if (Settings.MaxGeneratedFrames < 1 || Settings.MaxGeneratedFrames > 3)
+            if (Settings.MaxGeneratedFrames < 1 || Settings.MaxGeneratedFrames > 5)
             {
                 errors.Add(Loc.Get("LocDlssgErrMaxFrames"));
             }

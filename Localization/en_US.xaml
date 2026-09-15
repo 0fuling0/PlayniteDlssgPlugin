@@ -64,9 +64,6 @@
     <sys:String x:Key="LocDlssgCardIni">Custom INI Configuration</sys:String>
     <sys:String x:Key="LocDlssgChkCustomIni">Use custom INI content (generated from options below)</sys:String>
     <sys:String x:Key="LocDlssgChkCustomIniTip">When enabled, INI content is generated from the options below; when disabled, the selected INI file from the source directory is copied as-is</sys:String>
-    <sys:String x:Key="LocDlssgRouterLabel">Router (rendering architecture)</sys:String>
-    <sys:String x:Key="LocDlssgRouterDesc">SM86 = Ampere architecture (RTX 30 series); SM75 = Turing architecture (RTX 20 series)</sys:String>
-    <sys:String x:Key="LocDlssgRouterTip">SM86 for RTX 30 series; SM75 for RTX 20 series</sys:String>
     <sys:String x:Key="LocDlssgKernelLabel">KernelImage (kernel image mode)</sys:String>
     <sys:String x:Key="LocDlssgKernelDesc">PTX = driver JIT compilation (best compatibility); Cubin = precompiled binary (exact GPU match required); Auto = choose automatically</sys:String>
     <sys:String x:Key="LocDlssgKernelTip">PTX = driver JIT compilation (best compatibility); Cubin = precompiled binary; Auto = choose automatically</sys:String>
@@ -74,8 +71,8 @@
     <sys:String x:Key="LocDlssgBilinearDesc">0 = off (exact output, default); 1 = on (approximate sampling, SM86/Ampere only)</sys:String>
     <sys:String x:Key="LocDlssgBilinearTip">0 = exact output (default); 1 = approximate hardware bilinear filtering, SM86 only</sys:String>
     <sys:String x:Key="LocDlssgMaxFramesLabel">MaxGeneratedFrames (max generated frames)</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesDesc">1 = 2X frame generation; 2 = 3X; 3 = 4X (upper limit; the actual multiplier is decided by the game)</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesTip">Frame generation multiplier limit: 1 = 2X, 2 = 3X, 3 = 4X</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesDesc">1 = 2X frame generation; 2 = 3X; 3 = 4X; 5 = 6X (upper limit; the actual multiplier is decided by the game)</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesTip">Frame generation multiplier limit: 1 = 2X, 2 = 3X, 3 = 4X, 5 = 6X</sys:String>
     <sys:String x:Key="LocDlssgLogLevelLabel">LogLevel (logging level)</sys:String>
     <sys:String x:Key="LocDlssgLogLevelDesc">0 = off; 1 = errors only; 2 = diagnostics; 3 = verbose</sys:String>
     <sys:String x:Key="LocDlssgLogLevelTip">0 = off; 1 = errors only; 2 = diagnostics; 3 = verbose</sys:String>
@@ -86,26 +83,25 @@
     <sys:String x:Key="LocDlssgBtnBrowse">Browse...</sys:String>
     <sys:String x:Key="LocDlssgBtnBrowseTip">Select the folder containing the DLL and INI files</sys:String>
     <sys:String x:Key="LocDlssgPathPlaceholder">Type or select a path</sys:String>
-    <sys:String x:Key="LocDlssgSourceDllHelp">DLL source: bundled root (version.dll) or the altnative folder (dinput8/dxgi/winhttp/winmm.dll)</sys:String>
-    <sys:String x:Key="LocDlssgSourceIniHelp">INI source: bundled root (dlssg_sm86.ini) or config/presets (sm86-default/performance.ini)</sys:String>
+    <sys:String x:Key="LocDlssgSourceDllHelp">DLL source: bundled root (version.dll) or the alternatives folder (dinput8/dxgi/dbghelp/d3d12/winmm.dll)</sys:String>
+    <sys:String x:Key="LocDlssgSourceIniHelp">INI source: the bundled dlssg_sm86.ini, or dlssg_sm86.ini from the source directory when set</sys:String>
     <sys:String x:Key="LocDlssgDllLabel">DLL file</sys:String>
     <sys:String x:Key="LocDlssgDllDesc">Proxy DLL to deploy</sys:String>
-    <sys:String x:Key="LocDlssgDllTip">Options: version.dll (root); dinput8.dll, dxgi.dll, winhttp.dll, winmm.dll (altnative folder)</sys:String>
-    <sys:String x:Key="LocDlssgDllHelp">version.dll is the standard proxy; dinput8/dxgi/winhttp/winmm are alternative injection methods</sys:String>
+    <sys:String x:Key="LocDlssgDllTip">Options: version.dll (root); dinput8.dll, dxgi.dll, dbghelp.dll, d3d12.dll, winmm.dll (alternatives folder)</sys:String>
+    <sys:String x:Key="LocDlssgDllHelp">version.dll is the standard proxy; the others are alternative injection methods</sys:String>
     <sys:String x:Key="LocDlssgIniLabel">INI file</sys:String>
     <sys:String x:Key="LocDlssgIniDesc">INI configuration to deploy</sys:String>
-    <sys:String x:Key="LocDlssgIniTip">Options: dlssg_sm86.ini (root); sm86-default.ini, sm86-performance.ini (config/presets folder)</sys:String>
-    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini is the custom configuration; sm86-default/performance are preset configurations</sys:String>
+    <sys:String x:Key="LocDlssgIniTip">dlssg_sm86.ini from the bundled files or the source directory</sys:String>
+    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini is the factory configuration; the kernel family is selected automatically for the GPU</sys:String>
     <sys:String x:Key="LocDlssgBrowseDialog">Select the folder containing DLSSG files</sys:String>
 
     <!-- Settings validation -->
     <sys:String x:Key="LocDlssgErrSourceMissing">Source directory does not exist</sys:String>
     <sys:String x:Key="LocDlssgErrDllInvalid">DLL file name is invalid</sys:String>
     <sys:String x:Key="LocDlssgErrIniInvalid">INI file name is invalid</sys:String>
-    <sys:String x:Key="LocDlssgErrRouter">Router must be SM86 or SM75</sys:String>
     <sys:String x:Key="LocDlssgErrKernel">KernelImage must be PTX, Cubin or Auto</sys:String>
     <sys:String x:Key="LocDlssgErrBilinear">HardwareBilinear must be 0 or 1</sys:String>
-    <sys:String x:Key="LocDlssgErrMaxFrames">MaxGeneratedFrames must be between 1 and 3</sys:String>
+    <sys:String x:Key="LocDlssgErrMaxFrames">MaxGeneratedFrames must be between 1 and 5</sys:String>
     <sys:String x:Key="LocDlssgErrLogLevel">LogLevel must be between 0 and 3</sys:String>
     <sys:String x:Key="LocDlssgErrScope">Deploy scope is invalid</sys:String>
     <sys:String x:Key="LocDlssgErrCustomIni">Custom INI content cannot be empty when enabled</sys:String>

@@ -13,9 +13,8 @@ Description: |
   - One-click deployment of proxy DLL and INI config
   - One-click uninstall of previously deployed DLSSG files
   - Localized UI: English (default) and Simplified Chinese
-  - GPU auto-detection (RTX 20 -> SM75, RTX 30 -> SM86)
-  - Custom INI parameters: Router, KernelImage, HardwareBilinear, MaxGeneratedFrames, LogLevel
-  - Multiple DLL injection methods: version.dll, dinput8.dll, dxgi.dll, winhttp.dll, winmm.dll
+  - Custom INI parameters: KernelImage, HardwareBilinear, MaxGeneratedFrames (up to 6X), LogLevel
+  - Multiple DLL injection methods: version.dll, dinput8.dll, dxgi.dll, dbghelp.dll, d3d12.dll, winmm.dll
   - Responsive 3-column masonry settings layout
   - Playnite theme-aware UI (font scaling, light/dark)
 IconUrl: https://raw.githubusercontent.com/0fuling0/PlayniteDlssgPlugin/master/256.png

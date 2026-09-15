@@ -64,9 +64,6 @@
     <sys:String x:Key="LocDlssgCardIni">自定义 INI 配置</sys:String>
     <sys:String x:Key="LocDlssgChkCustomIni">使用自定义 INI 内容（下方选项生成)</sys:String>
     <sys:String x:Key="LocDlssgChkCustomIniTip">启用后，插件会根据下方选项自动生成 INI 内容；禁用则直接复制源目录下选定的 INI 文件</sys:String>
-    <sys:String x:Key="LocDlssgRouterLabel">Router（渲染架构）</sys:String>
-    <sys:String x:Key="LocDlssgRouterDesc">SM86 = Ampere架构(RTX 30系)；SM75 = Turing架构(RTX 20系)</sys:String>
-    <sys:String x:Key="LocDlssgRouterTip">SM86适用于RTX 30系；SM75适用于RTX 20系</sys:String>
     <sys:String x:Key="LocDlssgKernelLabel">KernelImage（内核镜像模式）</sys:String>
     <sys:String x:Key="LocDlssgKernelDesc">PTX=驱动JIT编译(兼容性最好)；Cubin=预编译二进制(需精确匹配GPU)；Auto=自动选择</sys:String>
     <sys:String x:Key="LocDlssgKernelTip">PTX=驱动JIT编译(兼容性最好)；Cubin=预编译二进制；Auto=自动选择</sys:String>
@@ -74,8 +71,8 @@
     <sys:String x:Key="LocDlssgBilinearDesc">0=关闭(精确输出，默认)；1=开启(近似采样，仅SM86/Ampere支持)</sys:String>
     <sys:String x:Key="LocDlssgBilinearTip">0=精确输出(默认)；1=硬件近似双线性过滤，仅SM86支持</sys:String>
     <sys:String x:Key="LocDlssgMaxFramesLabel">MaxGeneratedFrames（最大生成帧数）</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesDesc">1=2X帧生成；2=3X；3=4X(上限，实际倍率由游戏决定)</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesTip">帧生成倍率上限：1=2倍，2=3倍，3=4倍</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesDesc">1=2X帧生成；2=3X；3=4X；5=6X(上限，实际倍率由游戏决定)</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesTip">帧生成倍率上限：1=2倍，2=3倍，3=4倍，5=6倍</sys:String>
     <sys:String x:Key="LocDlssgLogLevelLabel">LogLevel（日志等级）</sys:String>
     <sys:String x:Key="LocDlssgLogLevelDesc">0=关闭 1=仅错误 2=诊断信息 3=详细调试</sys:String>
     <sys:String x:Key="LocDlssgLogLevelTip">0=关闭 1=仅错误 2=诊断信息 3=详细调试</sys:String>
@@ -86,26 +83,25 @@
     <sys:String x:Key="LocDlssgBtnBrowse">浏览...</sys:String>
     <sys:String x:Key="LocDlssgBtnBrowseTip">选择包含 DLL 和 INI 文件的文件夹</sys:String>
     <sys:String x:Key="LocDlssgPathPlaceholder">输入或选择路径</sys:String>
-    <sys:String x:Key="LocDlssgSourceDllHelp">DLL来源：内置资源根目录(version.dll) 或 altnative文件夹(dinput8/dxgi/winhttp/winmm.dll)</sys:String>
-    <sys:String x:Key="LocDlssgSourceIniHelp">INI来源：内置资源根目录(dlssg_sm86.ini) 或 config/presets(sm86-default/performance.ini)</sys:String>
+    <sys:String x:Key="LocDlssgSourceDllHelp">DLL来源：内置资源根目录(version.dll) 或 alternatives文件夹(dinput8/dxgi/dbghelp/d3d12/winmm.dll)</sys:String>
+    <sys:String x:Key="LocDlssgSourceIniHelp">INI来源：内置的 dlssg_sm86.ini；设置了来源目录时使用该目录下的 dlssg_sm86.ini</sys:String>
     <sys:String x:Key="LocDlssgDllLabel">DLL 文件</sys:String>
     <sys:String x:Key="LocDlssgDllDesc">选择要部署的 DLL 代理文件</sys:String>
-    <sys:String x:Key="LocDlssgDllTip">可选：version.dll(根目录)、dinput8.dll、dxgi.dll、winhttp.dll、winmm.dll(altnative文件夹)</sys:String>
-    <sys:String x:Key="LocDlssgDllHelp">version.dll为标准代理；dinput8/dxgi/winhttp/winmm为替代注入方式</sys:String>
+    <sys:String x:Key="LocDlssgDllTip">可选：version.dll(根目录)、dinput8.dll、dxgi.dll、dbghelp.dll、d3d12.dll、winmm.dll(alternatives文件夹)</sys:String>
+    <sys:String x:Key="LocDlssgDllHelp">version.dll为标准代理；其余为替代注入方式</sys:String>
     <sys:String x:Key="LocDlssgIniLabel">INI 文件</sys:String>
     <sys:String x:Key="LocDlssgIniDesc">选择要部署的 INI 配置文件</sys:String>
-    <sys:String x:Key="LocDlssgIniTip">可选：dlssg_sm86.ini(根目录)、sm86-default.ini、sm86-performance.ini(config/presets文件夹)</sys:String>
-    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini为自定义配置；sm86-default/performance为预设配置</sys:String>
+    <sys:String x:Key="LocDlssgIniTip">使用内置或来源目录中的 dlssg_sm86.ini</sys:String>
+    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini为出厂配置；内核族会根据显卡自动选择</sys:String>
     <sys:String x:Key="LocDlssgBrowseDialog">选择 DLSSG 文件所在文件夹</sys:String>
 
     <!-- Settings validation -->
     <sys:String x:Key="LocDlssgErrSourceMissing">源目录不存在</sys:String>
     <sys:String x:Key="LocDlssgErrDllInvalid">DLL 文件 无效</sys:String>
     <sys:String x:Key="LocDlssgErrIniInvalid">INI 文件 无效</sys:String>
-    <sys:String x:Key="LocDlssgErrRouter">Router 必须是 SM86 或 SM75</sys:String>
     <sys:String x:Key="LocDlssgErrKernel">KernelImage 必须是 PTX、Cubin 或 Auto</sys:String>
     <sys:String x:Key="LocDlssgErrBilinear">HardwareBilinear 必须是 0 或 1</sys:String>
-    <sys:String x:Key="LocDlssgErrMaxFrames">MaxGeneratedFrames 必须在 1 到 3 之间</sys:String>
+    <sys:String x:Key="LocDlssgErrMaxFrames">MaxGeneratedFrames 必须在 1 到 5 之间</sys:String>
     <sys:String x:Key="LocDlssgErrLogLevel">LogLevel 必须在 0 到 3 之间</sys:String>
     <sys:String x:Key="LocDlssgErrScope">释放范围无效</sys:String>
     <sys:String x:Key="LocDlssgErrCustomIni">启用自定义 INI 时，内容不能为空</sys:String>

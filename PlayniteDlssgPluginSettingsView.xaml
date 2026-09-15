@@ -151,18 +151,6 @@
 
                         <StackPanel Margin="0,6,0,0">
                             <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgRouterLabel}"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgRouterDesc}"/>
-                                <ComboBox Style="{StaticResource ComboStyle}"
-                                          SelectedValue="{Binding Settings.Router, UpdateSourceTrigger=PropertyChanged}"
-                                          SelectedValuePath="Content"
-                                          ToolTip="{DynamicResource LocDlssgRouterTip}">
-                                    <ComboBoxItem Content="SM86"/>
-                                    <ComboBoxItem Content="SM75"/>
-                                </ComboBox>
-                            </StackPanel>
-
-                            <StackPanel Margin="0,6,0,0">
                                 <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgKernelLabel}"/>
                                 <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgKernelDesc}"/>
                                 <ComboBox Style="{StaticResource ComboStyle}"
@@ -197,6 +185,8 @@
                                     <ComboBoxItem Content="1"/>
                                     <ComboBoxItem Content="2"/>
                                     <ComboBoxItem Content="3"/>
+                                    <ComboBoxItem Content="4"/>
+                                    <ComboBoxItem Content="5"/>
                                 </ComboBox>
                             </StackPanel>
 
@@ -249,7 +239,8 @@
                                 <ComboBoxItem Content="version.dll"/>
                                 <ComboBoxItem Content="dinput8.dll"/>
                                 <ComboBoxItem Content="dxgi.dll"/>
-                                <ComboBoxItem Content="winhttp.dll"/>
+                                <ComboBoxItem Content="dbghelp.dll"/>
+                                <ComboBoxItem Content="d3d12.dll"/>
                                 <ComboBoxItem Content="winmm.dll"/>
                             </ComboBox>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
@@ -265,8 +256,6 @@
                                       IsEditable="False"
                                       ToolTip="{DynamicResource LocDlssgIniTip}">
                                 <ComboBoxItem Content="dlssg_sm86.ini"/>
-                                <ComboBoxItem Content="sm86-default.ini"/>
-                                <ComboBoxItem Content="sm86-performance.ini"/>
                             </ComboBox>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
                                        Text="{DynamicResource LocDlssgIniHelp}"/>

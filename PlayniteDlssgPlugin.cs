@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,64 +31,6 @@ namespace PlayniteDlssgPlugin
         {
             settings = new PlayniteDlssgPluginSettingsViewModel(this);
             Properties = new GenericPluginProperties { HasSettings = true };
-
-            DetectAndSetDefaultRouter();
-        }
-
-        private void DetectAndSetDefaultRouter()
-        {
-            try
-            {
-                var gpuName = GetGpuName();
-                if (!string.IsNullOrEmpty(gpuName))
-                {
-                    logger.Info("Detected GPU: " + gpuName);
-
-                    var gpuLower = gpuName.ToLowerInvariant();
-                    bool isRtx20Series = gpuLower.Contains("rtx 20") ||
-                                         gpuLower.Contains("geforce rtx 20") ||
-                                         (gpuLower.Contains("rtx") && (gpuLower.Contains("2060") || gpuLower.Contains("2070") ||
-                                                                       gpuLower.Contains("2080") || gpuLower.Contains("2050")));
-
-                    if (isRtx20Series && settings.Settings.Router != "SM75")
-                    {
-                        logger.Info("RTX 20 series detected, setting default Router to SM75");
-                        settings.Settings.Router = "SM75";
-                    }
-                    else if (!isRtx20Series && settings.Settings.Router != "SM86")
-                    {
-                        logger.Info("Non-RTX 20 series detected, setting default Router to SM86");
-                        settings.Settings.Router = "SM86";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Warn(ex, "Failed to detect GPU, using default Router");
-            }
-        }
-
-        private string GetGpuName()
-        {
-            try
-            {
-                using (var searcher = new ManagementObjectSearcher("SELECT Name FROM Win32_VideoController"))
-                {
-                    foreach (ManagementObject obj in searcher.Get())
-                    {
-                        var name = obj["Name"] != null ? obj["Name"].ToString() : null;
-                        if (!string.IsNullOrEmpty(name) &&
-                            (name.Contains("NVIDIA") || name.Contains("GeForce") || name.Contains("RTX") || name.Contains("GTX")))
-                        {
-                            return name;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-            }
-            return null;
         }
 
         public override IEnumerable<MainMenuItem> GetMainMenuItems(GetMainMenuItemsArgs args)
@@ -260,10 +201,10 @@ namespace PlayniteDlssgPlugin
             {
                 if (!string.IsNullOrWhiteSpace(sourceDirectory))
                 {
-                    var altnativeDll = Path.Combine(sourceDirectory, "altnative", dllFileName);
-                    if (File.Exists(altnativeDll))
+                    var alternativeDll = Path.Combine(sourceDirectory, "alternatives", dllFileName);
+                    if (File.Exists(alternativeDll))
                     {
-                        sourceDll = altnativeDll;
+                        sourceDll = alternativeDll;
                     }
                 }
             }
@@ -277,33 +218,14 @@ namespace PlayniteDlssgPlugin
             }
             if (string.IsNullOrWhiteSpace(sourceDll) || !File.Exists(sourceDll))
             {
-                var altnativeDll = Path.Combine(pluginDir, "dlssg_for_sm86", "altnative", dllFileName);
-                if (File.Exists(altnativeDll))
+                var alternativeDll = Path.Combine(pluginDir, "dlssg_for_sm86", "alternatives", dllFileName);
+                if (File.Exists(alternativeDll))
                 {
-                    sourceDll = altnativeDll;
+                    sourceDll = alternativeDll;
                 }
             }
 
             var sourceIni = string.IsNullOrWhiteSpace(sourceDirectory) ? null : Path.Combine(sourceDirectory, iniFileName);
-            if (string.IsNullOrWhiteSpace(sourceIni) || !File.Exists(sourceIni))
-            {
-                if (!string.IsNullOrWhiteSpace(sourceDirectory))
-                {
-                    var presetsIni = Path.Combine(sourceDirectory, "config", "presets", iniFileName);
-                    if (File.Exists(presetsIni))
-                    {
-                        sourceIni = presetsIni;
-                    }
-                }
-            }
-            if (string.IsNullOrWhiteSpace(sourceIni) || !File.Exists(sourceIni))
-            {
-                var presetsIni = Path.Combine(pluginDir, "dlssg_for_sm86", "config", "presets", iniFileName);
-                if (File.Exists(presetsIni))
-                {
-                    sourceIni = presetsIni;
-                }
-            }
             if (string.IsNullOrWhiteSpace(sourceIni) || !File.Exists(sourceIni))
             {
                 var submoduleIni = Path.Combine(pluginDir, "dlssg_for_sm86", iniFileName);

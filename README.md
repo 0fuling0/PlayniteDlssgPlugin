@@ -12,12 +12,11 @@ Playnite DLSSG 插件，用于将 DLSSG SM86 文件（`version.dll` + `dlssg_sm8
 ## 功能特性
 - **自动检测**：扫描游戏库，识别已安装 DLSS 3 帧生成（`nvngx_dlssg.dll`）的游戏
 - **一键部署**：将 `version.dll` 代理文件和 `dlssg_sm86.ini` 配置文件复制到目标游戏目录
-- **GPU 自动识别**：首次运行自动检测 GPU 架构（RTX 20 系 → SM75，RTX 30/40 系 → SM86）
 - **灵活配置**：
   - 选择释放范围：当前筛选结果 / 当前选中游戏 / 全部游戏
-  - 自定义 INI 参数：Router、KernelImage、HardwareBilinear、MaxGeneratedFrames、LogLevel
-  - 可选 DLL 注入方式：version.dll / dinput8.dll / dxgi.dll / winhttp.dll / winmm.dll
-  - 多种 INI 预设：默认 / 性能优先 / 自定义
+  - 自定义 INI 参数：KernelImage、HardwareBilinear、MaxGeneratedFrames、LogLevel（内核架构由运行库按显卡自动选择）
+  - 可选 DLL 注入方式：version.dll / dinput8.dll / dxgi.dll / dbghelp.dll / d3d12.dll / winmm.dll
+  - 内置 dlssg_for_sm86 0.3.1：支持 RTX 20/30 系帧生成，出厂默认 4X，最高可调 6X
 - **部署报告**：显示成功/失败游戏列表，便于排查问题
 - **响应式界面**：三栏瀑布流布局，自适应 Playnite 设置窗口宽度
 - **主题适配**：跟随 Playnite 字体大小与深/浅色主题
@@ -31,7 +30,6 @@ Playnite DLSSG 插件，用于将 DLSSG SM86 文件（`version.dll` + `dlssg_sm8
 1. 打开 Playnite 设置 → 插件 → **Playnite DLSSG Plugin**
 2. （可选）设置源目录，留空则使用内置资源
 3. 选择默认释放范围
-4. 根据 GPU 选择 Router（SM75/SM86）或启用自动检测
 5. 点击 **释放文件** 按钮开始部署
 6. 查看部署结果报告
 
@@ -39,9 +37,8 @@ Playnite DLSSG 插件，用于将 DLSSG SM86 文件（`version.dll` + `dlssg_sm8
 | 文件 | 说明 |
 |------|------|
 | `version.dll` | 标准代理 DLL，放在游戏根目录 |
-| `dinput8.dll` / `dxgi.dll` / `winhttp.dll` / `winmm.dll` | 替代注入方式（放在 `altnative/`） |
-| `dlssg_sm86.ini` | 自定义配置文件 |
-| `sm86-default.ini` / `sm86-performance.ini` | 预设配置（`config/presets/`） |
+| `dinput8.dll` / `dxgi.dll` / `dbghelp.dll` / `d3d12.dll` / `winmm.dll` | 替代注入方式（放在 `alternatives/`） |
+| `dlssg_sm86.ini` | 出厂配置文件（内核架构按显卡自动选择） |
 
 ## 编译构建
 需求：Visual Studio 2019/2022，.NET Framework 4.6.2，PlayniteSDK
