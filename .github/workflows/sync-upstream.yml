@@ -1,0 +1,65 @@
+name: Sync upstream dlssg_for_sm86
+
+# Keeps the dlssg_for_sm86 submodule on the newest upstream release and rolls the
+# plugin version to match. When something changed the build/release workflow is
+# invoked directly as a reusable workflow rather than relying on the tag push to
+# trigger it: a tag pushed with the repository's own GITHUB_TOKEN does not start
+# another workflow run (GitHub suppresses that to avoid recursion).
+
+on:
+  schedule:
+    # 04:17 UTC daily - deliberately off the hour, when GitHub's scheduler is busiest.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Only report what would change, do not commit'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: windows-latest
+    outputs:
+      updated: ${{ steps.sync.outputs.updated }}
+      tag: ${{ steps.sync.outputs.tag }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Configure git identity
+        shell: pwsh
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync submodule and roll version
+        id: sync
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $dryRun = "${{ inputs.dry_run }}" -eq "true"
+          ./sync_upstream.ps1 -DryRun:$dryRun
+
+  release:
+    needs: sync
+    if: needs.sync.outputs.updated == 'true'
+    permissions:
+      contents: write
+    uses: ./.github/workflows/build.yml
+    with:
+      ref: ${{ github.ref_name }}
+      tag: ${{ needs.sync.outputs.tag }}
+    secrets: inherit

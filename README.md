@@ -16,7 +16,7 @@ Playnite DLSSG 插件，用于将 DLSSG SM86 文件（`version.dll` + `dlssg_sm8
   - 选择释放范围：当前筛选结果 / 当前选中游戏 / 全部游戏
   - 自定义 INI 参数：KernelImage、HardwareBilinear、MaxGeneratedFrames、LogLevel（内核架构由运行库按显卡自动选择）
   - 可选 DLL 注入方式：version.dll / dinput8.dll / dxgi.dll / dbghelp.dll / d3d12.dll / winmm.dll
-  - 内置 dlssg_for_sm86 0.3.1：支持 RTX 20/30 系帧生成，出厂默认 4X，最高可调 6X
+  - 内置 dlssg_for_sm86 0.3.5：支持 RTX 20/30 系帧生成，出厂默认 4X，最高可调 6X
 - **部署报告**：显示成功/失败游戏列表，便于排查问题
 - **响应式界面**：三栏瀑布流布局，自适应 Playnite 设置窗口宽度
 - **主题适配**：跟随 Playnite 字体大小与深/浅色主题
@@ -39,6 +39,19 @@ Playnite DLSSG 插件，用于将 DLSSG SM86 文件（`version.dll` + `dlssg_sm8
 | `version.dll` | 标准代理 DLL，放在游戏根目录 |
 | `dinput8.dll` / `dxgi.dll` / `dbghelp.dll` / `d3d12.dll` / `winmm.dll` | 替代注入方式（放在 `alternatives/`） |
 | `dlssg_sm86.ini` | 出厂配置文件（内核架构按显卡自动选择） |
+
+## 上游同步
+
+内置的运行库来自子模块 `dlssg_for_sm86`，它固定在上游的某个 release tag 上（而非浮动分支），
+因此每次发布的内容都可复现。
+
+- **自动**：`.github/workflows/sync-upstream.yml` 每天检查上游最新 release。有新版本时自动更新
+  子模块、滚动插件版本、写入更新日志、提交打 tag，并调用构建工作流发布 Release。没有更新时不做任何事。
+- **手动**：`./sync_upstream.ps1`。加 `-DryRun` 可只预览不落盘。
+- **版本规则**：每次跟随上游更新，插件版本 **+minor**（1.2 → 1.3），patch 位留给同版本内的热修。
+  更新日志会自动带上上游的更新说明。
+
+脚本还会同步更新本文档中「内置 dlssg_for_sm86 x.y.z」的版本号。
 
 ## 编译构建
 需求：Visual Studio 2019/2022，.NET Framework 4.6.2，PlayniteSDK

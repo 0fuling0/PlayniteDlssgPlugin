@@ -1,15 +1,26 @@
 name: Build and Release
 
 on:
+  # Tag pushes only. Also reacting to a branch push touching extension.yaml would
+  # start a second run for the same version whenever the branch and its tag are
+  # pushed together, and the two runs would race on the release assets.
   push:
     tags:
       - 'v*'
-    branches:
-      - main
-      - master
-    paths:
-      - 'manifest/extension.yaml'
   workflow_dispatch:
+  # Called by sync-upstream.yml once it has bumped the version and pushed the tag.
+  workflow_call:
+    inputs:
+      ref:
+        description: 'Git ref to build. The sync workflow passes its branch so the checkout includes the new commit.'
+        required: false
+        type: string
+        default: ''
+      tag:
+        description: 'Release tag to publish. Defaults to v<version read from manifest/extension.yaml>.'
+        required: false
+        type: string
+        default: ''
 
 permissions:
   contents: write
@@ -22,6 +33,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # inputs.ref is empty unless sync-upstream.yml called us, in which case
+          # github.ref still points at the commit from before its own push.
+          ref: ${{ inputs.ref || github.ref }}
           submodules: recursive
           fetch-depth: 0
 
@@ -38,8 +52,12 @@ jobs:
 
           $version = $match.Matches.Groups[1].Value.Trim()
 
+          # sync-upstream.yml already created the tag, so prefer the tag it hands us.
+          $tag = "${{ inputs.tag }}"
+          if ([string]::IsNullOrWhiteSpace($tag)) { $tag = "v$version" }
+
           "version=$version" >> $env:GITHUB_OUTPUT
-          "tag=v$version" >> $env:GITHUB_OUTPUT
+          "tag=$tag" >> $env:GITHUB_OUTPUT
 
           Write-Host "Version: $version"
           Write-Host "Tag: v$version"

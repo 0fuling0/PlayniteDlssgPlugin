@@ -28,3 +28,6 @@ dlssg_for_sm86/
 
 # Local config
 local.settings.json
+
+# Assistant workspace data (not part of the addon)
+.workbuddy-ai/

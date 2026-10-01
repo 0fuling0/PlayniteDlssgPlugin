@@ -195,45 +195,10 @@ namespace PlayniteDlssgPlugin
             var iniFileName = settings.Settings.IniFileName;
 
             var pluginDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            var bundledDirectory = Path.Combine(pluginDir, "dlssg_for_sm86");
 
-            var sourceDll = string.IsNullOrWhiteSpace(sourceDirectory) ? null : Path.Combine(sourceDirectory, dllFileName);
-            if (string.IsNullOrWhiteSpace(sourceDll) || !File.Exists(sourceDll))
-            {
-                if (!string.IsNullOrWhiteSpace(sourceDirectory))
-                {
-                    var alternativeDll = Path.Combine(sourceDirectory, "alternatives", dllFileName);
-                    if (File.Exists(alternativeDll))
-                    {
-                        sourceDll = alternativeDll;
-                    }
-                }
-            }
-            if (string.IsNullOrWhiteSpace(sourceDll) || !File.Exists(sourceDll))
-            {
-                var submoduleDll = Path.Combine(pluginDir, "dlssg_for_sm86", dllFileName);
-                if (File.Exists(submoduleDll))
-                {
-                    sourceDll = submoduleDll;
-                }
-            }
-            if (string.IsNullOrWhiteSpace(sourceDll) || !File.Exists(sourceDll))
-            {
-                var alternativeDll = Path.Combine(pluginDir, "dlssg_for_sm86", "alternatives", dllFileName);
-                if (File.Exists(alternativeDll))
-                {
-                    sourceDll = alternativeDll;
-                }
-            }
-
-            var sourceIni = string.IsNullOrWhiteSpace(sourceDirectory) ? null : Path.Combine(sourceDirectory, iniFileName);
-            if (string.IsNullOrWhiteSpace(sourceIni) || !File.Exists(sourceIni))
-            {
-                var submoduleIni = Path.Combine(pluginDir, "dlssg_for_sm86", iniFileName);
-                if (File.Exists(submoduleIni))
-                {
-                    sourceIni = submoduleIni;
-                }
-            }
+            var sourceDll = FindSourceFile(sourceDirectory, bundledDirectory, dllFileName, true);
+            var sourceIni = FindSourceFile(sourceDirectory, bundledDirectory, iniFileName, false);
 
             var customIni = settings.Settings.UseCustomIni ? settings.Settings.BuildCustomIniContent() : null;
 
@@ -279,6 +244,45 @@ namespace PlayniteDlssgPlugin
             {
                 PlayniteApi.Dialogs.ShowMessage(summary.ToString(), Loc.Get("LocDlssgDeployResultTitle"));
             }
+        }
+
+        /// <summary>
+        /// Resolves a file from the user supplied source directory first and the bundled
+        /// files second. Both follow the upstream layout: version.dll sits at the root and
+        /// the other proxy DLL names live in the "alternatives" folder next to it.
+        /// </summary>
+        private static string FindSourceFile(
+            string sourceDirectory,
+            string bundledDirectory,
+            string fileName,
+            bool searchAlternatives)
+        {
+            var roots = new List<string>();
+            if (!string.IsNullOrWhiteSpace(sourceDirectory))
+            {
+                roots.Add(sourceDirectory);
+            }
+            roots.Add(bundledDirectory);
+
+            foreach (var root in roots)
+            {
+                var candidate = Path.Combine(root, fileName);
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+
+                if (searchAlternatives)
+                {
+                    candidate = Path.Combine(root, "alternatives", fileName);
+                    if (File.Exists(candidate))
+                    {
+                        return candidate;
+                    }
+                }
+            }
+
+            return null;
         }
 
         private DeploymentSummary DeployFiles(
