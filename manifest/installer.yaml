@@ -1,5 +1,13 @@
 AddonId: 'PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513'
 Packages:
+  - Version: 1.3
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-10-01
+    PackageUrl: 'https://github.com/0fuling0/PlayniteDlssgPlugin/releases/download/v1.3/PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513_1_3.pext'
+    Changelog:
+      - Bundled dlssg_for_sm86 0.3.5 (was 0.3.1)
+      - '0.3.5: fix a defect since 0.3.0 - after the game re-creates the frame-generation feature the wrong optimized kernel could be used'
+      - 'Automated upstream tracking: a daily workflow now updates the bundled runtime and rolls the plugin version'
   - Version: 1.2
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-09-13
