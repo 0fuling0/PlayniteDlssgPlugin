@@ -1,5 +1,12 @@
 AddonId: 'PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513'
 Packages:
+  - Version: 1.4
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-10-15
+    PackageUrl: 'https://github.com/0fuling0/PlayniteDlssgPlugin/releases/download/v1.4/PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513_1_4.pext'
+    Changelog:
+      - Bundled dlssg_for_sm86 0.4.0 (was 0.3.5)
+      - 超分 INT8（RTX 30 / 20）、DLSS-G 预设 C（FG Lite）与可选的 XeSS-FG 引擎；随包运行库换成 310.9.16。**从 0.3.x 升级：文件结构变了，先删掉旧的代理 DLL 与 INI，再复制新版的 `version.dll`、`dlssg_sm86.ini` 和整个 `dlssg_sm86\` 目录。** 附件是完整包（含超分文件），说明见 README。
   - Version: 1.3
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-10-01
