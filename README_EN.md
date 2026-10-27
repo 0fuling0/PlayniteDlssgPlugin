@@ -16,7 +16,7 @@ Based on [sdli1995/dlssg_for_sm86](https://github.com/sdli1995/dlssg_for_sm86).
   - Deploy scope: Current filter / Selected games / All games
   - Custom INI parameters: KernelImage, HardwareBilinear, MaxGeneratedFrames, LogLevel (kernel family is selected automatically by the runtime)
   - Optional DLL injection methods: version.dll / dinput8.dll / dxgi.dll / dbghelp.dll / d3d12.dll / winmm.dll
-  - Bundled dlssg_for_sm86 0.4.0: RTX 20/30 series frame generation, 4X factory default, up to 6X
+  - Bundled dlssg_for_sm86 0.4.1: RTX 20/30 series frame generation, 4X factory default, up to 6X
 - **Deploy Report**: Shows success/failed game lists for troubleshooting
 - **Responsive UI**: Three-column masonry layout, adapts to Playnite settings window width
 - **Theme Aware**: Follows Playnite font scaling and light/dark themes

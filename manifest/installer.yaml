@@ -1,5 +1,12 @@
 AddonId: 'PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513'
 Packages:
+  - Version: 1.5
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-10-27
+    PackageUrl: 'https://github.com/0fuling0/PlayniteDlssgPlugin/releases/download/v1.5/PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513_1_5.pext'
+    Changelog:
+      - Bundled dlssg_for_sm86 0.4.1 (was 0.4.0)
+      - XeSS-FG 多帧生成（帧生成模型改成采用了MFG-Unlocker 1.6.0 指出的原生mfg模型移植，即 Intel model 15，2X / 3X / 4X）、张量核 CUDA 后端、RTX 50 上的 XeSS-FG 修复、驱动下限改为硬性 R580、超分 INT8 首帧卡顿修复。**从 0.4.0 升级：文件结构没变，直接用新包覆盖 `version.dll`、`dlssg_sm86.ini` 和整个 `dlssg_sm86\` 目录即可；`[XeSSFG] Model` 键已删除。** 附件是完整包（含超分文件），说明见 README。
   - Version: 1.4
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-10-15

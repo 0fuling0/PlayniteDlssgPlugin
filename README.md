@@ -16,7 +16,7 @@ Playnite DLSSG 插件，用于将 DLSSG SM86 文件（`version.dll` + `dlssg_sm8
   - 选择释放范围：当前筛选结果 / 当前选中游戏 / 全部游戏
   - 自定义 INI 参数：KernelImage、HardwareBilinear、MaxGeneratedFrames、LogLevel（内核架构由运行库按显卡自动选择）
   - 可选 DLL 注入方式：version.dll / dinput8.dll / dxgi.dll / dbghelp.dll / d3d12.dll / winmm.dll
-  - 内置 dlssg_for_sm86 0.4.0：支持 RTX 20/30 系帧生成，出厂默认 4X，最高可调 6X
+  - 内置 dlssg_for_sm86 0.4.1：支持 RTX 20/30 系帧生成，出厂默认 4X，最高可调 6X
 - **部署报告**：显示成功/失败游戏列表，便于排查问题
 - **响应式界面**：三栏瀑布流布局，自适应 Playnite 设置窗口宽度
 - **主题适配**：跟随 Playnite 字体大小与深/浅色主题
