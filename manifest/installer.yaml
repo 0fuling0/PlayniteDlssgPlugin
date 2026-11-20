@@ -1,5 +1,12 @@
 AddonId: 'PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513'
 Packages:
+  - Version: 1.6
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-11-20
+    PackageUrl: 'https://github.com/0fuling0/PlayniteDlssgPlugin/releases/download/v1.6/PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513_1_6.pext'
+    Changelog:
+      - Bundled dlssg_for_sm86 0.4.2 (was 0.4.1)
+      - XeSS-FG 在 RTX 50（Blackwell）上的性能修复（为 26 个内核单独编 `.bw` 镜像，赛博朋克 2077 3440×1440 的 RTX 5070 上 4X 每真实帧 6.54 → 4.68 ms、2X 2.43 → 1.69 ms）、抖动运动矢量支持（`DLSSG.MvecJittered=1`，3X / 4X 不再以 `unsupported_input` 结束）、4K 优化（自研 MV splat CUDA 内核 + 散射缓冲前缀清理，每真实帧再快 3.0–5.6 %、输出逐位不变）、新增单文件 INI 配置器 `dlssg_sm86ini_Configur...
   - Version: 1.5
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-10-27
