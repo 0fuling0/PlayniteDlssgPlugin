@@ -2,20 +2,21 @@ AddonId: PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513
 Type: Generic
 Name: Playnite DLSSG Plugin
 Author: fuling
-ShortDescription: Deploys DLSSG SM86 (version.dll + dlssg_sm86.ini) to game directories containing nvngx_dlssg.dll
+ShortDescription: Deploys DLSSG SM86 (proxy DLL + dlssg_sm86.ini + dlssg_sm86 folder) to game directories containing nvngx_dlssg.dll
 InstallerManifestUrl: https://raw.githubusercontent.com/0fuling0/PlayniteDlssgPlugin/master/manifest/installer.yaml
 SourceUrl: https://github.com/0fuling0/PlayniteDlssgPlugin
 Description: |
-  Playnite DLSSG Plugin deploys DLSSG SM86 files (version.dll + dlssg_sm86.ini) to game directories containing nvngx_dlssg.dll, enabling DLSS 3 Frame Generation on RTX 20/30 series GPUs for games that don't natively support it.
+  Playnite DLSSG Plugin deploys DLSSG SM86 files (a proxy DLL, dlssg_sm86.ini and the dlssg_sm86 folder) to game directories containing nvngx_dlssg.dll, enabling DLSS 3 Frame Generation on RTX 20/30 series GPUs for games that don't natively support it.
   
   Features:
   - Auto-detects games with DLSS 3 Frame Generation (nvngx_dlssg.dll)
-  - One-click deployment of proxy DLL and INI config
-  - One-click uninstall of previously deployed DLSSG files
+  - One-click deployment of the proxy DLL, the INI and the whole dlssg_sm86 folder
+  - One-click uninstall that removes all three again
   - Localized UI: English (default) and Simplified Chinese
-  - Custom INI parameters: KernelImage, HardwareBilinear, MaxGeneratedFrames (up to 6X), LogLevel
-  - Multiple DLL injection methods: version.dll, dinput8.dll, dxgi.dll, dbghelp.dll, d3d12.dll, winmm.dll
-  - Responsive 3-column masonry settings layout
+  - Options follow the dlssg_for_sm86 0.4.2 key layout: Engine (DLSS / XeSS), MaxGeneratedFrames (up to 6X), Optimized, Preset, CatmullRomWarp, FlowResolution, UseHudless, super-resolution Mode, log Level and FrameTiming
+  - Multiple DLL injection methods: version.dll, winmm.dll, dbghelp.dll, dinput8.dll, dxgi.dll, d3d12.dll
+  - Small package: only the commonly used payload is bundled, the XeSS pack, the super-resolution pair and the alternative proxies are downloaded on first use and cached locally
+  - Responsive masonry settings layout
   - Playnite theme-aware UI (font scaling, light/dark)
 IconUrl: https://raw.githubusercontent.com/0fuling0/PlayniteDlssgPlugin/master/256.png
 Tags: ['Generic', 'DLSSG', 'DLSS', 'Frame Generation', 'NVIDIA', 'RTX', 'deployment']

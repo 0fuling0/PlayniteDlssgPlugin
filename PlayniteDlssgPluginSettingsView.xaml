@@ -109,6 +109,7 @@
                        HorizontalAlignment="Center"
                        ItemWidth="{Binding ElementName=MainScrollViewer, Path=ActualWidth, Converter={StaticResource WidthToItemWidthConverter}}">
 
+                <!-- Card 1: deploy / uninstall -->
                 <Border Style="{StaticResource TextBoxLikeCardBorder}">
                     <StackPanel>
                         <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardDeploy}"/>
@@ -141,72 +142,174 @@
                     </StackPanel>
                 </Border>
 
+                <!-- Card 2: frame generation -->
                 <Border Style="{StaticResource TextBoxLikeCardBorder}">
                     <StackPanel>
-                        <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardIni}"/>
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardFrameGen}"/>
 
                         <CheckBox Style="{StaticResource CheckStyle}" Content="{DynamicResource LocDlssgChkCustomIni}"
                                   IsChecked="{Binding Settings.UseCustomIni, UpdateSourceTrigger=PropertyChanged}"
                                   ToolTip="{DynamicResource LocDlssgChkCustomIniTip}"/>
+                        <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                   Text="{DynamicResource LocDlssgChkCustomIniDesc}"/>
 
                         <StackPanel Margin="0,6,0,0">
-                            <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgKernelLabel}"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgKernelDesc}"/>
-                                <ComboBox Style="{StaticResource ComboStyle}"
-                                          SelectedValue="{Binding Settings.KernelImage, UpdateSourceTrigger=PropertyChanged}"
-                                          SelectedValuePath="Content"
-                                          ToolTip="{DynamicResource LocDlssgKernelTip}">
-                                    <ComboBoxItem Content="PTX"/>
-                                    <ComboBoxItem Content="Cubin"/>
-                                    <ComboBoxItem Content="Auto"/>
-                                </ComboBox>
-                            </StackPanel>
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgEngineLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgEngineDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.Engine, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgEngineTip}">
+                                <ComboBoxItem Content="DLSS"/>
+                                <ComboBoxItem Content="XeSS"/>
+                            </ComboBox>
+                        </StackPanel>
 
-                            <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgBilinearLabel}"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgBilinearDesc}"/>
-                                <ComboBox Style="{StaticResource ComboStyle}"
-                                          SelectedValue="{Binding Settings.HardwareBilinear, UpdateSourceTrigger=PropertyChanged}"
-                                          SelectedValuePath="Content"
-                                          ToolTip="{DynamicResource LocDlssgBilinearTip}">
-                                    <ComboBoxItem Content="0"/>
-                                    <ComboBoxItem Content="1"/>
-                                </ComboBox>
-                            </StackPanel>
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgMaxFramesLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgMaxFramesDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.MaxGeneratedFrames, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgMaxFramesTip}">
+                                <ComboBoxItem Content="1"/>
+                                <ComboBoxItem Content="2"/>
+                                <ComboBoxItem Content="3"/>
+                                <ComboBoxItem Content="4"/>
+                                <ComboBoxItem Content="5"/>
+                            </ComboBox>
+                        </StackPanel>
 
-                            <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgMaxFramesLabel}"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgMaxFramesDesc}"/>
-                                <ComboBox Style="{StaticResource ComboStyle}"
-                                          SelectedValue="{Binding Settings.MaxGeneratedFrames, UpdateSourceTrigger=PropertyChanged}"
-                                          SelectedValuePath="Content"
-                                          ToolTip="{DynamicResource LocDlssgMaxFramesTip}">
-                                    <ComboBoxItem Content="1"/>
-                                    <ComboBoxItem Content="2"/>
-                                    <ComboBoxItem Content="3"/>
-                                    <ComboBoxItem Content="4"/>
-                                    <ComboBoxItem Content="5"/>
-                                </ComboBox>
-                            </StackPanel>
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgOptimizedLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgOptimizedDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.Optimized, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgOptimizedTip}">
+                                <ComboBoxItem Content="0"/>
+                                <ComboBoxItem Content="1"/>
+                                <ComboBoxItem Content="2"/>
+                                <ComboBoxItem Content="3"/>
+                            </ComboBox>
+                        </StackPanel>
 
-                            <StackPanel Margin="0,6,0,0">
-                                <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgLogLevelLabel}"/>
-                                <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgLogLevelDesc}"/>
-                                <ComboBox Style="{StaticResource ComboStyle}"
-                                          SelectedValue="{Binding Settings.LogLevel, UpdateSourceTrigger=PropertyChanged}"
-                                          SelectedValuePath="Content"
-                                          ToolTip="{DynamicResource LocDlssgLogLevelTip}">
-                                    <ComboBoxItem Content="0"/>
-                                    <ComboBoxItem Content="1"/>
-                                    <ComboBoxItem Content="2"/>
-                                    <ComboBoxItem Content="3"/>
-                                </ComboBox>
-                            </StackPanel>
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgPresetLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgPresetDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.Preset, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgPresetTip}">
+                                <ComboBoxItem Content="A"/>
+                                <ComboBoxItem Content="B"/>
+                                <ComboBoxItem Content="C"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgCatmullRomLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgCatmullRomDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.CatmullRomWarp, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgCatmullRomTip}">
+                                <ComboBoxItem Content="0"/>
+                                <ComboBoxItem Content="1"/>
+                            </ComboBox>
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
+                <!-- Card 3: XeSS engine and super resolution -->
+                <Border Style="{StaticResource TextBoxLikeCardBorder}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardXeSSAndSr}"/>
+                        <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgCardXeSSAndSrDesc}"/>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgFlowResolutionLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgFlowResolutionDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.FlowResolution, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgFlowResolutionTip}">
+                                <ComboBoxItem Content="Coarse"/>
+                                <ComboBoxItem Content="Middle"/>
+                                <ComboBoxItem Content="Fine"/>
+                                <ComboBoxItem Content="CoarseAt4K"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgUseHudlessLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgUseHudlessDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.UseHudless, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgUseHudlessTip}">
+                                <ComboBoxItem Content="Auto"/>
+                                <ComboBoxItem Content="1"/>
+                                <ComboBoxItem Content="0"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgSuperResolutionLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgSuperResolutionDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.SuperResolutionMode, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgSuperResolutionTip}">
+                                <ComboBoxItem Content="Off"/>
+                                <ComboBoxItem Content="M-INT8"/>
+                                <ComboBoxItem Content="L-INT8"/>
+                                <ComboBoxItem Content="M-FP16"/>
+                                <ComboBoxItem Content="L-FP16"/>
+                            </ComboBox>
+                            <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
+                                       Text="{DynamicResource LocDlssgSuperResolutionHelp}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 4: logging and diagnostics -->
+                <Border Style="{StaticResource TextBoxLikeCardBorder}">
+                    <StackPanel>
+                        <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardLogging}"/>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgLogLevelLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgLogLevelDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.LogLevel, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgLogLevelTip}">
+                                <ComboBoxItem Content="0"/>
+                                <ComboBoxItem Content="1"/>
+                                <ComboBoxItem Content="2"/>
+                                <ComboBoxItem Content="3"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,6,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgFrameTimingLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgFrameTimingDesc}"/>
+                            <ComboBox Style="{StaticResource ComboStyle}"
+                                      SelectedValue="{Binding Settings.FrameTiming, UpdateSourceTrigger=PropertyChanged}"
+                                      SelectedValuePath="Content"
+                                      ToolTip="{DynamicResource LocDlssgFrameTimingTip}">
+                                <ComboBoxItem Content="0"/>
+                                <ComboBoxItem Content="1"/>
+                            </ComboBox>
+                        </StackPanel>
+
+                        <TextBlock Style="{StaticResource SettingDesc}" Margin="0,8,0,0"
+                                   Text="{DynamicResource LocDlssgLogLocationHelp}"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Card 5: files and component cache -->
                 <Border Style="{StaticResource TextBoxLikeCardBorder}">
                     <StackPanel>
                         <TextBlock Style="{StaticResource SectionTitle}" Text="{DynamicResource LocDlssgCardPaths}"/>
@@ -223,9 +326,7 @@
                                          ToolTip="{DynamicResource LocDlssgPathPlaceholder}"/>
                             </DockPanel>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
-                                       Text="{DynamicResource LocDlssgSourceDllHelp}"/>
-                            <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
-                                       Text="{DynamicResource LocDlssgSourceIniHelp}"/>
+                                       Text="{DynamicResource LocDlssgSourceDirHelp}"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,6,0,0">
@@ -237,11 +338,11 @@
                                       IsEditable="False"
                                       ToolTip="{DynamicResource LocDlssgDllTip}">
                                 <ComboBoxItem Content="version.dll"/>
+                                <ComboBoxItem Content="winmm.dll"/>
+                                <ComboBoxItem Content="dbghelp.dll"/>
                                 <ComboBoxItem Content="dinput8.dll"/>
                                 <ComboBoxItem Content="dxgi.dll"/>
-                                <ComboBoxItem Content="dbghelp.dll"/>
                                 <ComboBoxItem Content="d3d12.dll"/>
-                                <ComboBoxItem Content="winmm.dll"/>
                             </ComboBox>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
                                        Text="{DynamicResource LocDlssgDllHelp}"/>
@@ -259,6 +360,22 @@
                             </ComboBox>
                             <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0"
                                        Text="{DynamicResource LocDlssgIniHelp}"/>
+                        </StackPanel>
+
+                        <StackPanel Margin="0,10,0,0">
+                            <TextBlock Style="{StaticResource SettingLabel}" Text="{DynamicResource LocDlssgCacheLabel}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Text="{DynamicResource LocDlssgCacheDesc}"/>
+                            <TextBlock Style="{StaticResource SettingDesc}" Margin="0,3,0,0" Opacity="0.85"
+                                       Text="{Binding CacheStatus}"/>
+                            <WrapPanel Margin="0,4,0,0">
+                                <Button Style="{StaticResource NormalBtn}" Margin="0,0,6,0"
+                                        Content="{DynamicResource LocDlssgBtnOpenCache}"
+                                        Command="{Binding OpenCacheFolderCommand}"/>
+                                <Button Style="{StaticResource NormalBtn}" Margin="0"
+                                        Content="{DynamicResource LocDlssgBtnClearCache}"
+                                        Command="{Binding ClearCacheCommand}"
+                                        ToolTip="{DynamicResource LocDlssgBtnClearCacheTip}"/>
+                            </WrapPanel>
                         </StackPanel>
                     </StackPanel>
                 </Border>

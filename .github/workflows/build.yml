@@ -94,6 +94,33 @@ jobs:
         run: |
           msbuild PlayniteDlssgPlugin.sln /p:Configuration=Release /verbosity:minimal
 
+      # Only the commonly used payload is packaged; the rest is downloaded on first
+      # use (see ComponentCache.cs). Fail loudly when an upstream release renames or
+      # moves one of these files instead of letting MSBuild report a missing copy.
+      - name: Verify bundled payload
+        shell: pwsh
+        run: |
+          $expected = @(
+            "dlssg_for_sm86\version.dll",
+            "dlssg_for_sm86\dlssg_sm86.ini",
+            "dlssg_for_sm86\dlssg_sm86\backend\sm86_backend.dll",
+            "dlssg_for_sm86\dlssg_sm86\kernels\fg_kernels.dll",
+            "dlssg_for_sm86\dlssg_sm86\runtime\nvngx_dlssg.dll"
+          )
+
+          $missing = @()
+          foreach ($relative in $expected) {
+            $path = Join-Path "bin\Release" $relative
+            if (-not (Test-Path $path)) { $missing += $relative }
+          }
+
+          if ($missing.Count -gt 0) {
+            throw "Bundled payload incomplete: $($missing -join ', '). Update PlayniteDlssgPlugin.csproj and ComponentCache.cs for the new upstream layout."
+          }
+
+          $size = (Get-ChildItem "bin\Release\dlssg_for_sm86" -Recurse -File | Measure-Object Length -Sum).Sum
+          Write-Host ("Bundled payload: {0:N1} MB" -f ($size / 1MB))
+
       - name: Download Playnite Portable
         shell: pwsh
         run: |

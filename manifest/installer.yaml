@@ -1,5 +1,19 @@
 AddonId: 'PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513'
 Packages:
+  - Version: 1.7
+    RequiredApiVersion: 6.0.0
+    ReleaseDate: 2026-11-21
+    PackageUrl: 'https://github.com/0fuling0/PlayniteDlssgPlugin/releases/download/v1.7/PlayniteDlssgPlugin_e3e4de51-1731-43fc-9008-d40767b4d513_1_7.pext'
+    Changelog:
+      - Bundled runtime is still dlssg_for_sm86 0.4.2 - 1.4 / 1.5 / 1.6 only followed the upstream runtime, the plugin itself still used the 0.3.x file layout and options
+      - 'Fix: deploy now copies the whole dlssg_sm86 folder next to the proxy DLL. 0.4.x embeds nothing, so the 1.4-1.6 packages (proxy + INI only) did not actually enable frame generation'
+      - 'Fix: uninstall removes the proxy DLL, the INI and the dlssg_sm86 folder again'
+      - 'Options rebuilt for the 0.4.2 key layout: [FrameGeneration] Engine / MaxGeneratedFrames / CatmullRomWarp, [DLSSG] Optimized / Preset, [XeSSFG] FlowResolution / UseHudless, [SuperResolution] Mode, [Logging] Level / FrameTiming'
+      - 'Removed the options 0.4.x no longer reads: KernelImage, HardwareBilinear'
+      - 'New: XeSS-FG engine (Engine=XeSS, 2X-4X) and INT8 super resolution (Mode=M/L-INT8)'
+      - 'Package slimmed to about 23 MB (1.3 shipped about 180 MB of 0.3.x proxies); the XeSS model pack, the super-resolution pair and the five alternative proxies are downloaded on first use and cached in %LOCALAPPDATA%\PlayniteDlssgPlugin'
+      - 'New component cache card: cached components, size, open folder and clear cache'
+      - 'Upgrading from 1.3-1.6: run Uninstall with the old version first, then deploy again - 0.3.x copied up to four proxies into each game folder and they have to be removed'
   - Version: 1.6
     RequiredApiVersion: 6.0.0
     ReleaseDate: 2026-11-20

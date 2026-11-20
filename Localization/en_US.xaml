@@ -7,24 +7,29 @@
     <sys:String x:Key="LocDlssgTitle">DLSSG SM86</sys:String>
     <sys:String x:Key="LocDlssgNoDeployGames">No games available to deploy.</sys:String>
     <sys:String x:Key="LocDlssgNoUninstallGames">No games available to uninstall.</sys:String>
-    <sys:String x:Key="LocDlssgSourceMissing">Source files not found. Please check the source directory and file names in plugin settings.&#10;&#10;DLL: {0}</sys:String>
-    <sys:String x:Key="LocDlssgIniLine">INI: {0}</sys:String>
-    <sys:String x:Key="LocDlssgNotFound">Not found</sys:String>
-    <sys:String x:Key="LocDlssgDeployConfirm">DLSSG files will be deployed to {0} game(s), and files with the same names in the targets will be overwritten. Continue?</sys:String>
+    <sys:String x:Key="LocDlssgSourceMissing">Source files not found. Check the source directory in the plugin settings, or clear the component cache and deploy again.&#10;&#10;{0}</sys:String>
+    <sys:String x:Key="LocDlssgDeployConfirm">DLSSG files will be deployed to {0} game(s) (the proxy DLL, dlssg_sm86.ini and the whole dlssg_sm86 folder), and files with the same names in the targets will be overwritten. Continue?</sys:String>
     <sys:String x:Key="LocDlssgDeployProgress">Deploying DLSSG files...</sys:String>
     <sys:String x:Key="LocDlssgDeployResultTitle">DLSSG Deploy Result</sys:String>
-    <sys:String x:Key="LocDlssgUninstallConfirm">Previously deployed DLSSG files will be removed from {0} game(s). Continue?</sys:String>
+    <sys:String x:Key="LocDlssgUninstallConfirm">Previously deployed DLSSG files (proxy DLL, INI and the dlssg_sm86 folder) will be removed from {0} game(s). Continue?</sys:String>
     <sys:String x:Key="LocDlssgUninstallProgress">Removing DLSSG files...</sys:String>
     <sys:String x:Key="LocDlssgUninstallResultTitle">DLSSG Uninstall Result</sys:String>
     <sys:String x:Key="LocDlssgFailNoInstallDir">No valid install directory</sys:String>
     <sys:String x:Key="LocDlssgFailNoTargetDir">No directory containing nvngx_dlssg.dll was found</sys:String>
     <sys:String x:Key="LocDlssgFailNoDeployedFiles">No previously deployed DLSSG files were found</sys:String>
 
+    <!-- Optional component download -->
+    <sys:String x:Key="LocDlssgDownloadConfirm">The current settings need optional components that are not cached yet. They have to be downloaded once (about {0} MB):&#10;&#10;{1}&#10;&#10;They are cached locally, so later deploys do not download them again. Continue?</sys:String>
+    <sys:String x:Key="LocDlssgDownloadProgress">Downloading optional components...</sys:String>
+    <sys:String x:Key="LocDlssgDownloadFailed">Failed to download optional components: {0}</sys:String>
+    <sys:String x:Key="LocDlssgDownloadCancelled">Download cancelled, no game directory was touched</sys:String>
+
     <!-- Result summary -->
     <sys:String x:Key="LocDlssgSummarySucceededGames">Succeeded games: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryFailedGames">Failed games: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryDirsDeploy">Target directories processed: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryDirsUninstall">Directories cleaned: {0}</sys:String>
+    <sys:String x:Key="LocDlssgSummaryFilesCopied">Files written: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryDeletedFiles">Files deleted: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryCancelled">Operation cancelled.</sys:String>
     <sys:String x:Key="LocDlssgSummarySuccessHeader">=== Succeeded ===</sys:String>
@@ -45,7 +50,7 @@
 
     <!-- Settings view -->
     <sys:String x:Key="LocDlssgSettingsTitle">Playnite DLSSG Plugin Settings</sys:String>
-    <sys:String x:Key="LocDlssgSettingsSubtitle">Files deployed by this plugin come from https://github.com/sdli1995/dlssg_for_sm86</sys:String>
+    <sys:String x:Key="LocDlssgSettingsSubtitle">Files deployed by this plugin come from https://github.com/sdli1995/dlssg_for_sm86 ; option names and values follow 0.4.2</sys:String>
 
     <sys:String x:Key="LocDlssgCardDeploy">Deploy &amp; Uninstall Actions</sys:String>
     <sys:String x:Key="LocDlssgScopeLabel">Default deploy scope</sys:String>
@@ -55,54 +60,109 @@
     <sys:String x:Key="LocDlssgScopeAll">All games</sys:String>
     <sys:String x:Key="LocDlssgScopeHelp">Filtered = games remaining after filtering; Selected = games selected in the list; All = the whole library</sys:String>
     <sys:String x:Key="LocDlssgBtnDeploy">Deploy Files</sys:String>
-    <sys:String x:Key="LocDlssgBtnDeployTip">Deploy the DLL / INI files to target game directories using the current settings</sys:String>
+    <sys:String x:Key="LocDlssgBtnDeployTip">Deploy the proxy DLL, the INI and the dlssg_sm86 folder to target game directories using the current settings</sys:String>
     <sys:String x:Key="LocDlssgBtnDeployDesc">Clicking the button above deploys files to the target game directories based on the current settings</sys:String>
     <sys:String x:Key="LocDlssgBtnUninstall">Uninstall Files</sys:String>
-    <sys:String x:Key="LocDlssgBtnUninstallTip">Remove previously deployed DLL / INI files from target game directories</sys:String>
+    <sys:String x:Key="LocDlssgBtnUninstallTip">Remove the previously deployed proxy DLL, INI and dlssg_sm86 folder from target game directories</sys:String>
     <sys:String x:Key="LocDlssgBtnUninstallDesc">Clicking the button above removes previously deployed files from the target game directories</sys:String>
 
-    <sys:String x:Key="LocDlssgCardIni">Custom INI Configuration</sys:String>
-    <sys:String x:Key="LocDlssgChkCustomIni">Use custom INI content (generated from options below)</sys:String>
-    <sys:String x:Key="LocDlssgChkCustomIniTip">When enabled, INI content is generated from the options below; when disabled, the selected INI file from the source directory is copied as-is</sys:String>
-    <sys:String x:Key="LocDlssgKernelLabel">KernelImage (kernel image mode)</sys:String>
-    <sys:String x:Key="LocDlssgKernelDesc">PTX = driver JIT compilation (best compatibility); Cubin = precompiled binary (exact GPU match required); Auto = choose automatically</sys:String>
-    <sys:String x:Key="LocDlssgKernelTip">PTX = driver JIT compilation (best compatibility); Cubin = precompiled binary; Auto = choose automatically</sys:String>
-    <sys:String x:Key="LocDlssgBilinearLabel">HardwareBilinear (hardware bilinear filtering)</sys:String>
-    <sys:String x:Key="LocDlssgBilinearDesc">0 = off (exact output, default); 1 = on (approximate sampling, SM86/Ampere only)</sys:String>
-    <sys:String x:Key="LocDlssgBilinearTip">0 = exact output (default); 1 = approximate hardware bilinear filtering, SM86 only</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesLabel">MaxGeneratedFrames (max generated frames)</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesDesc">1 = 2X frame generation; 2 = 3X; 3 = 4X; 5 = 6X (upper limit; the actual multiplier is decided by the game)</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesTip">Frame generation multiplier limit: 1 = 2X, 2 = 3X, 3 = 4X, 5 = 6X</sys:String>
-    <sys:String x:Key="LocDlssgLogLevelLabel">LogLevel (logging level)</sys:String>
-    <sys:String x:Key="LocDlssgLogLevelDesc">0 = off; 1 = errors only; 2 = diagnostics; 3 = verbose</sys:String>
-    <sys:String x:Key="LocDlssgLogLevelTip">0 = off; 1 = errors only; 2 = diagnostics; 3 = verbose</sys:String>
+    <sys:String x:Key="LocDlssgCardFrameGen">Frame Generation ([FrameGeneration] / [DLSSG])</sys:String>
+    <sys:String x:Key="LocDlssgChkCustomIni">Use custom INI content (generated from the options below)</sys:String>
+    <sys:String x:Key="LocDlssgChkCustomIniTip">When enabled the INI is generated from the options below; when disabled the factory INI from the source directory or the bundled payload is copied as-is</sys:String>
+    <sys:String x:Key="LocDlssgChkCustomIniDesc">Every option in the three option cards is written into the generated INI. Unchecked: these options are ignored and the factory INI is copied.</sys:String>
 
-    <sys:String x:Key="LocDlssgCardPaths">File Path Settings</sys:String>
+    <sys:String x:Key="LocDlssgEngineLabel">Engine (frame-generation engine)</sys:String>
+    <sys:String x:Key="LocDlssgEngineDesc">DLSS = NVIDIA DLSS-G model (default); XeSS = Intel XeSS-FG model 15, the model pack is downloaded on first use</sys:String>
+    <sys:String x:Key="LocDlssgEngineTip">DLSS = NVIDIA DLSS-G model; XeSS = Intel XeSS-FG model (2X/3X/4X, MaxGeneratedFrames limited to 1-3)</sys:String>
+
+    <sys:String x:Key="LocDlssgMaxFramesLabel">MaxGeneratedFrames (frames per real frame)</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesDesc">1 = 2X, 2 = 3X, 3 = 4X (factory), 5 = 6X. A requirement, not a ceiling - the game may pick less</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesTip">1 = 2X, 2 = 3X, 3 = 4X (factory), 5 = 6X. Engine=XeSS accepts 1-3 only</sys:String>
+
+    <sys:String x:Key="LocDlssgOptimizedLabel">Optimized (consistency tier, DLSS only)</sys:String>
+    <sys:String x:Key="LocDlssgOptimizedDesc">0 = stock kernels, 1 = all accelerations, bit-identical (factory), 2 = plus lossy image kernels, 3 = everything lossy (fastest)</sys:String>
+    <sys:String x:Key="LocDlssgOptimizedTip">0 = no acceleration; 1 = bit-identical (factory); 2 = lossy image kernels; 3 = everything lossy (fastest)</sys:String>
+
+    <sys:String x:Key="LocDlssgPresetLabel">Preset (render preset, DLSS only)</sys:String>
+    <sys:String x:Key="LocDlssgPresetDesc">A = no UI recomposition (factory), B = UI recomposition (needs a HUD-less image and a UI plane), C = FG Lite (faster, slightly lower quality)</sys:String>
+    <sys:String x:Key="LocDlssgPresetTip">A = factory; B = UI recomposition (no effect in most games); C = FG Lite, about 32-54 % less GPU time per generated frame</sys:String>
+
+    <sys:String x:Key="LocDlssgCatmullRomLabel">CatmullRomWarp (motion-compensation sampling)</sys:String>
+    <sys:String x:Key="LocDlssgCatmullRomDesc">0 = bilinear (factory), 1 = Catmull-Rom: sharper fine structures, +3-4 % per generated frame, no longer bit-identical</sys:String>
+    <sys:String x:Key="LocDlssgCatmullRomTip">0 = bilinear (factory); 1 = Catmull-Rom, sharper but slower. On the 310.9.16 payload enabling it refuses frame generation</sys:String>
+
+    <sys:String x:Key="LocDlssgCardXeSSAndSr">XeSS Engine &amp; Super Resolution ([XeSSFG] / [SuperResolution])</sys:String>
+    <sys:String x:Key="LocDlssgCardXeSSAndSrDesc">The first two are read only with Engine=XeSS; super resolution only takes effect on RTX 30/20. The matching payload is downloaded on first deploy.</sys:String>
+
+    <sys:String x:Key="LocDlssgFlowResolutionLabel">FlowResolution (optical flow, XeSS only)</sys:String>
+    <sys:String x:Key="LocDlssgFlowResolutionDesc">Coarse / Middle (factory) / Fine, finer is slower; CoarseAt4K = Coarse at 4K and above</sys:String>
+    <sys:String x:Key="LocDlssgFlowResolutionTip">Coarse, Middle (factory), Fine, CoarseAt4K (Coarse from 4K up)</sys:String>
+
+    <sys:String x:Key="LocDlssgUseHudlessLabel">UseHudless (UI compositing, XeSS only)</sys:String>
+    <sys:String x:Key="LocDlssgUseHudlessDesc">Auto (factory, same as 0: the whole image including UI is interpolated), 1 = strict (error when no HUD-less image), 0 = never composite</sys:String>
+    <sys:String x:Key="LocDlssgUseHudlessTip">Auto (factory, same as 0); 1 = always use the game's HUD-less image, error when missing; 0 = no UI compositing</sys:String>
+
+    <sys:String x:Key="LocDlssgSuperResolutionLabel">Mode (super-resolution preset, RTX 30/20 only)</sys:String>
+    <sys:String x:Key="LocDlssgSuperResolutionDesc">Off = not touched (factory); M/L-INT8 = preset M/L on this project's INT8 kernels; M/L-FP16 = same preset on NVIDIA's kernels</sys:String>
+    <sys:String x:Key="LocDlssgSuperResolutionTip">Off (factory), M-INT8, L-INT8, M-FP16, L-FP16</sys:String>
+    <sys:String x:Key="LocDlssgSuperResolutionHelp">INT8 pays off on the Performance / Ultra Performance modes; on Quality / Balanced / DLAA, M or L is slower than the game's own preset K. No effect on RTX 40/50.</sys:String>
+
+    <sys:String x:Key="LocDlssgCardLogging">Logging &amp; Diagnostics ([Logging])</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelLabel">Level (logging level)</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelDesc">0 = off, 1 = errors (factory), 2 = configuration and capability, 3 = kernel and evaluation traces</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelTip">0 = off; 1 = errors (factory); 2 = configuration and capability; 3 = kernel traces</sys:String>
+    <sys:String x:Key="LocDlssgFrameTimingLabel">FrameTiming (frame timing)</sys:String>
+    <sys:String x:Key="LocDlssgFrameTimingDesc">1 = write one line per real frame to frame_timing.txt in the log folder, for performance reports</sys:String>
+    <sys:String x:Key="LocDlssgFrameTimingTip">0 = off (factory); 1 = write frame_timing.txt</sys:String>
+    <sys:String x:Key="LocDlssgLogLocationHelp">There is one log: game directory\dlssg_sm86\logs\dlssg_sm86.log. Set Level to 2 first when troubleshooting.</sys:String>
+
+    <sys:String x:Key="LocDlssgCardPaths">File Paths &amp; Component Cache</sys:String>
     <sys:String x:Key="LocDlssgSourceDirLabel">Source directory</sys:String>
-    <sys:String x:Key="LocDlssgSourceDirDesc">Folder containing the DLSSG files (leave empty to use the files bundled with the plugin)</sys:String>
+    <sys:String x:Key="LocDlssgSourceDirDesc">Unpacked upstream release (version.dll, dlssg_sm86.ini and the dlssg_sm86 folder); leave empty to use the files bundled with the plugin</sys:String>
     <sys:String x:Key="LocDlssgBtnBrowse">Browse...</sys:String>
-    <sys:String x:Key="LocDlssgBtnBrowseTip">Select the folder containing the DLL and INI files</sys:String>
+    <sys:String x:Key="LocDlssgBtnBrowseTip">Select the unpacked upstream release folder</sys:String>
     <sys:String x:Key="LocDlssgPathPlaceholder">Type or select a path</sys:String>
-    <sys:String x:Key="LocDlssgSourceDllHelp">DLL source: bundled root (version.dll) or the alternatives folder (dinput8/dxgi/dbghelp/d3d12/winmm.dll)</sys:String>
-    <sys:String x:Key="LocDlssgSourceIniHelp">INI source: the bundled dlssg_sm86.ini, or dlssg_sm86.ini from the source directory when set</sys:String>
+    <sys:String x:Key="LocDlssgSourceDirHelp">The bundled payload carries only the files everyone needs; the XeSS pack, the super-resolution pair and the alternative proxies are downloaded and cached on first use.</sys:String>
     <sys:String x:Key="LocDlssgDllLabel">DLL file</sys:String>
-    <sys:String x:Key="LocDlssgDllDesc">Proxy DLL to deploy</sys:String>
-    <sys:String x:Key="LocDlssgDllTip">Options: version.dll (root); dinput8.dll, dxgi.dll, dbghelp.dll, d3d12.dll, winmm.dll (alternatives folder)</sys:String>
-    <sys:String x:Key="LocDlssgDllHelp">version.dll is the standard proxy; the others are alternative injection methods</sys:String>
+    <sys:String x:Key="LocDlssgDllDesc">Proxy DLL to deploy (use one at a time)</sys:String>
+    <sys:String x:Key="LocDlssgDllTip">version.dll is the standard proxy; the other five are alternatives, tried in the order winmm -> dbghelp -> dinput8 -> dxgi/d3d12</sys:String>
+    <sys:String x:Key="LocDlssgDllHelp">Only switch away from version.dll when the game never loads it. dxgi.dll and d3d12.dll sit on the render path: last resort, never both.</sys:String>
     <sys:String x:Key="LocDlssgIniLabel">INI file</sys:String>
-    <sys:String x:Key="LocDlssgIniDesc">INI configuration to deploy</sys:String>
+    <sys:String x:Key="LocDlssgIniDesc">Name of the INI to deploy</sys:String>
     <sys:String x:Key="LocDlssgIniTip">dlssg_sm86.ini from the bundled files or the source directory</sys:String>
-    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini is the factory configuration; the kernel family is selected automatically for the GPU</sys:String>
-    <sys:String x:Key="LocDlssgBrowseDialog">Select the folder containing DLSSG files</sys:String>
+    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini must sit next to the proxy DLL</sys:String>
+
+    <sys:String x:Key="LocDlssgCacheLabel">Component cache</sys:String>
+    <sys:String x:Key="LocDlssgCacheDesc">Optional components are downloaded once and reused from here</sys:String>
+    <sys:String x:Key="LocDlssgCacheComponents">Cached: {0}</sys:String>
+    <sys:String x:Key="LocDlssgCacheSize">Size: {0}</sys:String>
+    <sys:String x:Key="LocDlssgCacheLocation">Location: {0}</sys:String>
+    <sys:String x:Key="LocDlssgCacheEmpty">nothing yet</sys:String>
+    <sys:String x:Key="LocDlssgCacheItemXeSS">XeSS model pack</sys:String>
+    <sys:String x:Key="LocDlssgCacheItemSr">Super-resolution files</sys:String>
+    <sys:String x:Key="LocDlssgCacheItemProxy">Alternative proxies</sys:String>
+    <sys:String x:Key="LocDlssgBtnOpenCache">Open cache folder</sys:String>
+    <sys:String x:Key="LocDlssgBtnClearCache">Clear cache</sys:String>
+    <sys:String x:Key="LocDlssgBtnClearCacheTip">Delete the downloaded optional components; they are fetched again when next needed</sys:String>
+    <sys:String x:Key="LocDlssgCacheClearConfirm">The downloaded optional components will be deleted (files already deployed into games are not affected). Continue?</sys:String>
+    <sys:String x:Key="LocDlssgCacheClearFailed">Failed to clear the cache: {0}</sys:String>
+    <sys:String x:Key="LocDlssgBrowseDialog">Select the unpacked dlssg_for_sm86 release folder</sys:String>
 
     <!-- Settings validation -->
     <sys:String x:Key="LocDlssgErrSourceMissing">Source directory does not exist</sys:String>
     <sys:String x:Key="LocDlssgErrDllInvalid">DLL file name is invalid</sys:String>
     <sys:String x:Key="LocDlssgErrIniInvalid">INI file name is invalid</sys:String>
-    <sys:String x:Key="LocDlssgErrKernel">KernelImage must be PTX, Cubin or Auto</sys:String>
-    <sys:String x:Key="LocDlssgErrBilinear">HardwareBilinear must be 0 or 1</sys:String>
+    <sys:String x:Key="LocDlssgErrEngine">Engine must be DLSS or XeSS</sys:String>
     <sys:String x:Key="LocDlssgErrMaxFrames">MaxGeneratedFrames must be between 1 and 5</sys:String>
-    <sys:String x:Key="LocDlssgErrLogLevel">LogLevel must be between 0 and 3</sys:String>
+    <sys:String x:Key="LocDlssgErrMaxFramesXeSS">MaxGeneratedFrames must be between 1 and 3 with Engine=XeSS</sys:String>
+    <sys:String x:Key="LocDlssgErrOptimized">Optimized must be between 0 and 3</sys:String>
+    <sys:String x:Key="LocDlssgErrPreset">Preset must be A, B or C</sys:String>
+    <sys:String x:Key="LocDlssgErrCatmullRom">CatmullRomWarp must be 0 or 1</sys:String>
+    <sys:String x:Key="LocDlssgErrFlowResolution">FlowResolution must be Coarse, Middle, Fine or CoarseAt4K</sys:String>
+    <sys:String x:Key="LocDlssgErrUseHudless">UseHudless must be Auto, 1 or 0</sys:String>
+    <sys:String x:Key="LocDlssgErrSuperResolution">Super resolution Mode must be Off, M-INT8, L-INT8, M-FP16 or L-FP16</sys:String>
+    <sys:String x:Key="LocDlssgErrLogLevel">Level must be between 0 and 3</sys:String>
+    <sys:String x:Key="LocDlssgErrFrameTiming">FrameTiming must be 0 or 1</sys:String>
     <sys:String x:Key="LocDlssgErrScope">Deploy scope is invalid</sys:String>
     <sys:String x:Key="LocDlssgErrCustomIni">Custom INI content cannot be empty when enabled</sys:String>
 </ResourceDictionary>

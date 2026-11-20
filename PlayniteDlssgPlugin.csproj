@@ -43,6 +43,8 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -51,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PlayniteDlssgPlugin.cs" />
+    <Compile Include="ComponentCache.cs" />
     <Compile Include="Localization.cs" />
     <Compile Include="PlayniteDlssgPluginSettings.cs" />
     <Compile Include="PlayniteDlssgPluginSettingsView.xaml.cs">
@@ -81,6 +84,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <!--
+    Only the payload every user needs is packed into the .pext (about 23 MB):
+    the proxy, the factory INI, the backend, the frame-generation kernels and the
+    bundled runtime. The XeSS model pack, the super-resolution pair and the five
+    alternative proxies are fetched into %LOCALAPPDATA% on first use - see
+    ComponentCache.cs. Keep these paths in sync with ComponentCache.RawFiles /
+    ZipOnlyFiles when a new upstream release moves files around.
+  -->
   <ItemGroup>
     <None Include="dlssg_for_sm86\version.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -88,19 +99,13 @@
     <None Include="dlssg_for_sm86\dlssg_sm86.ini">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="dlssg_for_sm86\alternatives\dinput8.dll">
+    <None Include="dlssg_for_sm86\dlssg_sm86\backend\sm86_backend.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="dlssg_for_sm86\alternatives\dxgi.dll">
+    <None Include="dlssg_for_sm86\dlssg_sm86\kernels\fg_kernels.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="dlssg_for_sm86\alternatives\dbghelp.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="dlssg_for_sm86\alternatives\d3d12.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="dlssg_for_sm86\alternatives\winmm.dll">
+    <None Include="dlssg_for_sm86\dlssg_sm86\runtime\nvngx_dlssg.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

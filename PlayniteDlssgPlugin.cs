@@ -22,6 +22,9 @@ namespace PlayniteDlssgPlugin
 
         private static readonly Guid PluginId = Guid.Parse("e3e4de51-1731-43fc-9008-d40767b4d513");
 
+        /// <summary>Folder the mod itself creates inside a game directory.</summary>
+        private const string PayloadFolderName = "dlssg_sm86";
+
         public override Guid Id
         {
             get { return PluginId; }
@@ -180,6 +183,120 @@ namespace PlayniteDlssgPlugin
                 : sourceGames.Where(game => game != null).GroupBy(game => game.Id).Select(group => group.First()).ToList();
         }
 
+        /// <summary>One file of the payload: where it comes from and where it goes.</summary>
+        private sealed class FileMapping
+        {
+            /// <summary>Path inside the upstream bundle, for example dlssg_sm86\kernels\fg_kernels.dll.</summary>
+            public string SourceRelative;
+
+            /// <summary>Path inside the game directory.</summary>
+            public string TargetRelative;
+
+            /// <summary>Not bundled with the plugin: comes from the component cache.</summary>
+            public bool Optional;
+
+            /// <summary>Literal text written instead of copying a file (the generated INI).</summary>
+            public string Content;
+        }
+
+        private static string BundledDirectory
+        {
+            get
+            {
+                var pluginDirectory = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                return Path.Combine(pluginDirectory, "dlssg_for_sm86");
+            }
+        }
+
+        /// <summary>
+        /// Builds the file list for the current settings. The proxy and the INI go to
+        /// the game root, everything else mirrors the upstream dlssg_sm86 folder.
+        /// </summary>
+        private List<FileMapping> BuildFileMappings()
+        {
+            var current = settings.Settings;
+            var mappings = new List<FileMapping>();
+
+            var proxyIsStandard = string.Equals(current.DllFileName, "version.dll", StringComparison.OrdinalIgnoreCase);
+            mappings.Add(new FileMapping
+            {
+                SourceRelative = proxyIsStandard ? "version.dll" : @"alternatives\" + current.DllFileName,
+                TargetRelative = current.DllFileName,
+                Optional = !proxyIsStandard
+            });
+
+            mappings.Add(new FileMapping
+            {
+                SourceRelative = "dlssg_sm86.ini",
+                TargetRelative = current.IniFileName,
+                Content = current.UseCustomIni ? current.BuildCustomIniContent() : null
+            });
+
+            // Everything below is mandatory for frame generation.
+            mappings.Add(new FileMapping { SourceRelative = @"dlssg_sm86\backend\sm86_backend.dll" });
+            mappings.Add(new FileMapping { SourceRelative = @"dlssg_sm86\kernels\fg_kernels.dll" });
+            mappings.Add(new FileMapping { SourceRelative = @"dlssg_sm86\runtime\nvngx_dlssg.dll" });
+
+            if (current.IsXeSSEngine)
+            {
+                mappings.Add(new FileMapping
+                {
+                    SourceRelative = @"dlssg_sm86\xefg\xefg_kernels.dll",
+                    Optional = true
+                });
+            }
+
+            if (current.IsSuperResolutionEnabled)
+            {
+                mappings.Add(new FileMapping
+                {
+                    SourceRelative = @"dlssg_sm86\sr\nvngx_dlss.dll",
+                    Optional = true
+                });
+                mappings.Add(new FileMapping
+                {
+                    SourceRelative = @"dlssg_sm86\sr\sr_kernels.dll",
+                    Optional = true
+                });
+            }
+
+            foreach (var mapping in mappings)
+            {
+                if (mapping.TargetRelative == null)
+                {
+                    mapping.TargetRelative = mapping.SourceRelative;
+                }
+            }
+
+            return mappings;
+        }
+
+        /// <summary>
+        /// Resolves a payload file from the user supplied source directory first, the
+        /// files bundled with the plugin second and the component cache last.
+        /// </summary>
+        private static string ResolveSourcePath(string relativePath, string sourceDirectory)
+        {
+            var roots = new List<string>();
+            if (!string.IsNullOrWhiteSpace(sourceDirectory))
+            {
+                roots.Add(sourceDirectory);
+            }
+            roots.Add(BundledDirectory);
+            roots.Add(ComponentCache.CacheRoot);
+
+            foreach (var root in roots)
+            {
+                var candidate = Path.Combine(root, relativePath);
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
+        }
+
         private void DeployToGames(IEnumerable<Game> sourceGames)
         {
             var games = DeduplicateGames(sourceGames);
@@ -190,48 +307,101 @@ namespace PlayniteDlssgPlugin
                 return;
             }
 
-            var sourceDirectory = settings.Settings.SourceDirectory;
-            var dllFileName = settings.Settings.DllFileName;
-            var iniFileName = settings.Settings.IniFileName;
+            var current = settings.Settings;
+            var mappings = BuildFileMappings();
 
-            var pluginDir = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var bundledDirectory = Path.Combine(pluginDir, "dlssg_for_sm86");
+            // Core files must be present before anything is written to a game directory.
+            var missingCore = mappings
+                .Where(mapping => !mapping.Optional && mapping.Content == null)
+                .Select(mapping => mapping.SourceRelative)
+                .Where(relativePath => ResolveSourcePath(relativePath, current.SourceDirectory) == null)
+                .ToList();
 
-            var sourceDll = FindSourceFile(sourceDirectory, bundledDirectory, dllFileName, true);
-            var sourceIni = FindSourceFile(sourceDirectory, bundledDirectory, iniFileName, false);
-
-            var customIni = settings.Settings.UseCustomIni ? settings.Settings.BuildCustomIniContent() : null;
-
-            if (!File.Exists(sourceDll) || (customIni == null && !File.Exists(sourceIni)))
+            if (missingCore.Count > 0)
             {
-                var message = string.Format(Loc.Get("LocDlssgSourceMissing"), sourceDll ?? Loc.Get("LocDlssgNotFound"));
-                if (customIni == null)
-                {
-                    message += "\n" + string.Format(Loc.Get("LocDlssgIniLine"), sourceIni ?? Loc.Get("LocDlssgNotFound"));
-                }
-                PlayniteApi.Dialogs.ShowErrorMessage(message, Loc.Get("LocDlssgTitle"));
+                PlayniteApi.Dialogs.ShowErrorMessage(
+                    string.Format(Loc.Get("LocDlssgSourceMissing"), string.Join(Environment.NewLine, missingCore)),
+                    Loc.Get("LocDlssgTitle"));
                 return;
             }
 
-            var confirmation = PlayniteApi.Dialogs.ShowMessage(
+            // Ask about the deploy itself first: downloading a few hundred megabytes
+            // only to see the deploy cancelled afterwards would be wasteful.
+            var confirmationDeploy = PlayniteApi.Dialogs.ShowMessage(
                 string.Format(Loc.Get("LocDlssgDeployConfirm"), games.Count),
                 Loc.Get("LocDlssgTitle"));
 
-            if (confirmation != MessageBoxResult.OK)
+            if (confirmationDeploy != MessageBoxResult.OK)
             {
                 return;
+            }
+
+            // Optional payload (XeSS pack, super-resolution pair, alternative proxy) is
+            // fetched once into %LOCALAPPDATA% instead of being shipped in the .pext.
+            var missingOptional = mappings
+                .Where(mapping => mapping.Optional)
+                .Select(mapping => mapping.SourceRelative)
+                .Where(relativePath => ResolveSourcePath(relativePath, current.SourceDirectory) == null)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            if (missingOptional.Count > 0)
+            {
+                var megabytes = (ComponentCache.EstimateDownloadSize(missingOptional) / (1024.0 * 1024.0))
+                    .ToString("0", System.Globalization.CultureInfo.CurrentCulture);
+
+                var confirmation = PlayniteApi.Dialogs.ShowMessage(
+                    string.Format(
+                        Loc.Get("LocDlssgDownloadConfirm"),
+                        megabytes,
+                        string.Join(Environment.NewLine, missingOptional.Select(Path.GetFileName))),
+                    Loc.Get("LocDlssgTitle"));
+
+                if (confirmation != MessageBoxResult.OK)
+                {
+                    return;
+                }
+
+                var downloadError = DownloadComponents(missingOptional);
+                if (downloadError != null)
+                {
+                    PlayniteApi.Dialogs.ShowErrorMessage(
+                        string.Format(Loc.Get("LocDlssgDownloadFailed"), downloadError),
+                        Loc.Get("LocDlssgTitle"));
+                    return;
+                }
+            }
+
+            var resolved = new List<Tuple<FileMapping, string>>();
+            foreach (var mapping in mappings)
+            {
+                var sourcePath = mapping.Content != null
+                    ? null
+                    : ResolveSourcePath(mapping.SourceRelative, current.SourceDirectory);
+
+                if (sourcePath == null && mapping.Content == null)
+                {
+                    PlayniteApi.Dialogs.ShowErrorMessage(
+                        string.Format(Loc.Get("LocDlssgSourceMissing"), mapping.SourceRelative),
+                        Loc.Get("LocDlssgTitle"));
+                    return;
+                }
+
+                resolved.Add(Tuple.Create(mapping, sourcePath));
             }
 
             // Resolve localized strings up front: the progress action runs on a
             // background thread and cannot touch Application resources safely.
             var failNoInstallDir = Loc.Get("LocDlssgFailNoInstallDir");
             var failNoTargetDir = Loc.Get("LocDlssgFailNoTargetDir");
+            var deployXeSS = current.IsXeSSEngine;
+            var deploySuperResolution = current.IsSuperResolutionEnabled;
 
             DeploymentSummary summary = null;
             PlayniteApi.Dialogs.ActivateGlobalProgress(
                 progressArgs =>
                 {
-                    summary = DeployFiles(games, dllFileName, iniFileName, sourceDll, sourceIni, customIni,
+                    summary = DeployFiles(games, resolved, deployXeSS, deploySuperResolution,
                         failNoInstallDir, failNoTargetDir, progressArgs);
                 },
                 new GlobalProgressOptions(Loc.Get("LocDlssgDeployProgress"))
@@ -247,51 +417,61 @@ namespace PlayniteDlssgPlugin
         }
 
         /// <summary>
-        /// Resolves a file from the user supplied source directory first and the bundled
-        /// files second. Both follow the upstream layout: version.dll sits at the root and
-        /// the other proxy DLL names live in the "alternatives" folder next to it.
+        /// Downloads the optional payload into the component cache. Returns null on
+        /// success and an error description otherwise.
         /// </summary>
-        private static string FindSourceFile(
-            string sourceDirectory,
-            string bundledDirectory,
-            string fileName,
-            bool searchAlternatives)
+        private string DownloadComponents(IReadOnlyList<string> relativePaths)
         {
-            var roots = new List<string>();
-            if (!string.IsNullOrWhiteSpace(sourceDirectory))
-            {
-                roots.Add(sourceDirectory);
-            }
-            roots.Add(bundledDirectory);
+            var cancelled = false;
+            string error = null;
 
-            foreach (var root in roots)
-            {
-                var candidate = Path.Combine(root, fileName);
-                if (File.Exists(candidate))
+            PlayniteApi.Dialogs.ActivateGlobalProgress(
+                progressArgs =>
                 {
-                    return candidate;
-                }
-
-                if (searchAlternatives)
-                {
-                    candidate = Path.Combine(root, "alternatives", fileName);
-                    if (File.Exists(candidate))
+                    try
                     {
-                        return candidate;
+                        ComponentCache.Ensure(
+                            relativePaths,
+                            (percent, text) =>
+                            {
+                                progressArgs.CurrentProgressValue = percent;
+                                if (!string.IsNullOrEmpty(text))
+                                {
+                                    progressArgs.Text = text;
+                                }
+                            },
+                            progressArgs.CancelToken);
                     }
-                }
+                    catch (OperationCanceledException)
+                    {
+                        cancelled = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(ex, "Failed to download optional DLSSG components");
+                        error = ex.Message;
+                    }
+                },
+                new GlobalProgressOptions(Loc.Get("LocDlssgDownloadProgress"))
+                {
+                    IsIndeterminate = false,
+                    Cancelable = true
+                });
+
+            if (cancelled)
+            {
+                return Loc.Get("LocDlssgDownloadCancelled");
             }
 
-            return null;
+            settings.RefreshCacheStatus();
+            return error;
         }
 
         private DeploymentSummary DeployFiles(
             IReadOnlyList<Game> games,
-            string dllFileName,
-            string iniFileName,
-            string sourceDll,
-            string sourceIni,
-            string customIni,
+            IReadOnlyList<Tuple<FileMapping, string>> resolved,
+            bool deployXeSS,
+            bool deploySuperResolution,
             string failNoInstallDir,
             string failNoTargetDir,
             GlobalProgressActionArgs progressArgs)
@@ -326,30 +506,49 @@ namespace PlayniteDlssgPlugin
                 {
                     try
                     {
-                        var targetDll = Path.Combine(target, dllFileName);
-                        var targetIni = Path.Combine(target, iniFileName);
+                        foreach (var entry in resolved)
+                        {
+                            var mapping = entry.Item1;
+                            var destination = Path.Combine(target, mapping.TargetRelative);
+                            var destinationDirectory = Path.GetDirectoryName(destination);
 
-                        // Remove previously deployed files first, then copy the new ones.
-                        if (File.Exists(targetDll))
-                        {
-                            File.Delete(targetDll);
-                            summary.DeletedFiles++;
-                        }
-                        File.Copy(sourceDll, targetDll, true);
+                            if (!string.IsNullOrEmpty(destinationDirectory))
+                            {
+                                Directory.CreateDirectory(destinationDirectory);
+                            }
 
-                        if (File.Exists(targetIni))
-                        {
-                            File.Delete(targetIni);
-                            summary.DeletedFiles++;
+                            if (File.Exists(destination))
+                            {
+                                File.Delete(destination);
+                                summary.DeletedFiles++;
+                            }
+
+                            if (mapping.Content != null)
+                            {
+                                File.WriteAllText(destination, mapping.Content, new UTF8Encoding(false));
+                            }
+                            else
+                            {
+                                File.Copy(entry.Item2, destination, true);
+                            }
+
+                            summary.CopiedFiles++;
                         }
-                        if (customIni == null)
+
+                        // Drop payload folders the current settings no longer use, so a
+                        // game directory never carries a stale XeSS pack or SR pair.
+                        if (!deployXeSS)
                         {
-                            File.Copy(sourceIni, targetIni, true);
+                            summary.DeletedFiles += DeleteDirectoryIfPresent(
+                                Path.Combine(target, PayloadFolderName, "xefg"));
                         }
-                        else
+
+                        if (!deploySuperResolution)
                         {
-                            File.WriteAllText(targetIni, customIni, Encoding.UTF8);
+                            summary.DeletedFiles += DeleteDirectoryIfPresent(
+                                Path.Combine(target, PayloadFolderName, "sr"));
                         }
+
                         summary.CopiedDirectories++;
                     }
                     catch (Exception ex)
@@ -358,6 +557,7 @@ namespace PlayniteDlssgPlugin
                         summary.AddFailure(game.Name, target + ": " + ex.Message);
                     }
                 }
+
                 if (!summary.HasFailureForGame(game.Name))
                 {
                     summary.AddSuccess(game.Name);
@@ -366,6 +566,18 @@ namespace PlayniteDlssgPlugin
 
             progressArgs.CurrentProgressValue = 100;
             return summary;
+        }
+
+        private static int DeleteDirectoryIfPresent(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                return 0;
+            }
+
+            var files = Directory.GetFiles(path, "*", SearchOption.AllDirectories).Length;
+            Directory.Delete(path, true);
+            return files;
         }
 
         private void UninstallFromGames(IEnumerable<Game> sourceGames)
@@ -389,12 +601,15 @@ namespace PlayniteDlssgPlugin
 
             var failNoInstallDir = Loc.Get("LocDlssgFailNoInstallDir");
             var failNoDeployedFiles = Loc.Get("LocDlssgFailNoDeployedFiles");
+            var dllFileName = settings.Settings.DllFileName;
+            var iniFileName = settings.Settings.IniFileName;
 
             DeploymentSummary summary = null;
             PlayniteApi.Dialogs.ActivateGlobalProgress(
                 progressArgs =>
                 {
-                    summary = UninstallFiles(games, failNoInstallDir, failNoDeployedFiles, progressArgs);
+                    summary = UninstallFiles(games, dllFileName, iniFileName,
+                        failNoInstallDir, failNoDeployedFiles, progressArgs);
                 },
                 new GlobalProgressOptions(Loc.Get("LocDlssgUninstallProgress"))
                 {
@@ -410,12 +625,12 @@ namespace PlayniteDlssgPlugin
 
         private DeploymentSummary UninstallFiles(
             IReadOnlyList<Game> games,
+            string dllFileName,
+            string iniFileName,
             string failNoInstallDir,
             string failNoDeployedFiles,
             GlobalProgressActionArgs progressArgs)
         {
-            var dllFileName = settings.Settings.DllFileName;
-            var iniFileName = settings.Settings.IniFileName;
             var summary = new DeploymentSummary { UninstallMode = true };
 
             for (var index = 0; index < games.Count; index++)
@@ -448,6 +663,7 @@ namespace PlayniteDlssgPlugin
                     try
                     {
                         var removedAny = false;
+
                         var targetDll = Path.Combine(target, dllFileName);
                         if (File.Exists(targetDll))
                         {
@@ -464,6 +680,13 @@ namespace PlayniteDlssgPlugin
                             removedAny = true;
                         }
 
+                        var payloadDirectory = Path.Combine(target, PayloadFolderName);
+                        if (IsOurPayload(payloadDirectory))
+                        {
+                            summary.DeletedFiles += DeleteDirectoryIfPresent(payloadDirectory);
+                            removedAny = true;
+                        }
+
                         if (removedAny)
                         {
                             summary.CopiedDirectories++;
@@ -475,6 +698,7 @@ namespace PlayniteDlssgPlugin
                         summary.AddFailure(game.Name, target + ": " + ex.Message);
                     }
                 }
+
                 if (!summary.HasFailureForGame(game.Name))
                 {
                     summary.AddSuccess(game.Name);
@@ -485,42 +709,57 @@ namespace PlayniteDlssgPlugin
             return summary;
         }
 
+        /// <summary>
+        /// True only when the folder carries this mod's payload. Guards against deleting
+        /// a directory that merely shares the name.
+        /// </summary>
+        private static bool IsOurPayload(string payloadDirectory)
+        {
+            if (!Directory.Exists(payloadDirectory))
+            {
+                return false;
+            }
+
+            return File.Exists(Path.Combine(payloadDirectory, @"backend\sm86_backend.dll")) ||
+                   File.Exists(Path.Combine(payloadDirectory, @"runtime\nvngx_dlssg.dll"));
+        }
+
         private IEnumerable<string> FindTargetDirectories(string root)
         {
-            var directories = new Stack<string>();
-            directories.Push(root);
-            while (directories.Count > 0)
+            foreach (var entry in WalkDirectories(root))
             {
-                var directory = directories.Pop();
-                string[] files;
-                try
+                if (entry.Value.Any(file => string.Equals(
+                    Path.GetFileName(file), "nvngx_dlssg.dll", StringComparison.OrdinalIgnoreCase)))
                 {
-                    files = Directory.GetFiles(directory);
-                    foreach (var child in Directory.GetDirectories(directory))
-                    {
-                        directories.Push(child);
-                    }
-                }
-                catch (UnauthorizedAccessException ex)
-                {
-                    logger.Warn(ex, "Cannot access directory " + directory);
-                    continue;
-                }
-                catch (IOException ex)
-                {
-                    logger.Warn(ex, "Cannot enumerate directory " + directory);
-                    continue;
-                }
-
-                if (files.Any(file => string.Equals(Path.GetFileName(file), "nvngx_dlssg.dll", StringComparison.OrdinalIgnoreCase)))
-                {
-                    yield return directory;
+                    yield return entry.Key;
                 }
             }
         }
 
         private IEnumerable<string> FindUninstallTargetDirectories(string root, string dllFileName, string iniFileName)
         {
+            foreach (var entry in WalkDirectories(root))
+            {
+                var deployed = entry.Value.Any(file =>
+                {
+                    var fileName = Path.GetFileName(file);
+                    return string.Equals(fileName, dllFileName, StringComparison.OrdinalIgnoreCase) ||
+                           string.Equals(fileName, iniFileName, StringComparison.OrdinalIgnoreCase);
+                });
+
+                if (deployed || IsOurPayload(Path.Combine(entry.Key, PayloadFolderName)))
+                {
+                    yield return entry.Key;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Depth-first walk that yields every readable directory together with its
+        /// files. Unreadable directories are logged and skipped.
+        /// </summary>
+        private IEnumerable<KeyValuePair<string, string[]>> WalkDirectories(string root)
+        {
             var directories = new Stack<string>();
             directories.Push(root);
             while (directories.Count > 0)
@@ -546,15 +785,7 @@ namespace PlayniteDlssgPlugin
                     continue;
                 }
 
-                if (files.Any(file =>
-                {
-                    var fileName = Path.GetFileName(file);
-                    return string.Equals(fileName, dllFileName, StringComparison.OrdinalIgnoreCase) ||
-                           string.Equals(fileName, iniFileName, StringComparison.OrdinalIgnoreCase);
-                }))
-                {
-                    yield return directory;
-                }
+                yield return new KeyValuePair<string, string[]>(directory, files);
             }
         }
 
@@ -564,6 +795,7 @@ namespace PlayniteDlssgPlugin
             private readonly List<string> successes = new List<string>();
 
             public int CopiedDirectories { get; set; }
+            public int CopiedFiles { get; set; }
             public int DeletedFiles { get; set; }
             public bool UninstallMode { get; set; }
             public bool Cancelled { get; set; }
@@ -591,7 +823,11 @@ namespace PlayniteDlssgPlugin
                 builder.AppendLine(string.Format(
                     Loc.Get(UninstallMode ? "LocDlssgSummaryDirsUninstall" : "LocDlssgSummaryDirsDeploy"),
                     CopiedDirectories));
-                if (UninstallMode)
+                if (!UninstallMode)
+                {
+                    builder.AppendLine(string.Format(Loc.Get("LocDlssgSummaryFilesCopied"), CopiedFiles));
+                }
+                if (UninstallMode || DeletedFiles > 0)
                 {
                     builder.AppendLine(string.Format(Loc.Get("LocDlssgSummaryDeletedFiles"), DeletedFiles));
                 }

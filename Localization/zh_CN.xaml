@@ -7,24 +7,29 @@
     <sys:String x:Key="LocDlssgTitle">DLSSG SM86</sys:String>
     <sys:String x:Key="LocDlssgNoDeployGames">没有可部署的游戏</sys:String>
     <sys:String x:Key="LocDlssgNoUninstallGames">没有可卸载的游戏</sys:String>
-    <sys:String x:Key="LocDlssgSourceMissing">源文件不存在，请在设置中检查源目录和文件名&#10;&#10;DLL: {0}</sys:String>
-    <sys:String x:Key="LocDlssgIniLine">INI: {0}</sys:String>
-    <sys:String x:Key="LocDlssgNotFound">未找到</sys:String>
-    <sys:String x:Key="LocDlssgDeployConfirm">将向 {0} 个游戏释放 DLSSG 文件，并覆盖目标中的同名文件。是否继续？</sys:String>
+    <sys:String x:Key="LocDlssgSourceMissing">源文件不存在，请在设置中检查源目录，或清理组件缓存后重新释放&#10;&#10;{0}</sys:String>
+    <sys:String x:Key="LocDlssgDeployConfirm">将向 {0} 个游戏释放 DLSSG 文件（version.dll、dlssg_sm86.ini 与整个 dlssg_sm86 文件夹），并覆盖目标中的同名文件。是否继续？</sys:String>
     <sys:String x:Key="LocDlssgDeployProgress">正在部署 DLSSG 文件...</sys:String>
     <sys:String x:Key="LocDlssgDeployResultTitle">DLSSG SM86 部署结果</sys:String>
-    <sys:String x:Key="LocDlssgUninstallConfirm">将从 {0} 个游戏中移除之前释放的 DLSSG 文件。是否继续？</sys:String>
+    <sys:String x:Key="LocDlssgUninstallConfirm">将从 {0} 个游戏中移除之前释放的 DLSSG 文件（代理 DLL、INI 与 dlssg_sm86 文件夹）。是否继续？</sys:String>
     <sys:String x:Key="LocDlssgUninstallProgress">正在移除 DLSSG 文件...</sys:String>
     <sys:String x:Key="LocDlssgUninstallResultTitle">DLSSG SM86 卸载结果</sys:String>
     <sys:String x:Key="LocDlssgFailNoInstallDir">没有有效的安装目录</sys:String>
     <sys:String x:Key="LocDlssgFailNoTargetDir">未找到包含 nvngx_dlssg.dll 的目录</sys:String>
     <sys:String x:Key="LocDlssgFailNoDeployedFiles">未找到之前释放的 DLSSG 文件</sys:String>
 
+    <!-- Optional component download -->
+    <sys:String x:Key="LocDlssgDownloadConfirm">当前配置需要尚未缓存的可选组件，首次使用需要下载（约 {0} MB）：&#10;&#10;{1}&#10;&#10;下载后会缓存到本地，之后再释放不再重复下载。是否继续？</sys:String>
+    <sys:String x:Key="LocDlssgDownloadProgress">正在下载可选组件...</sys:String>
+    <sys:String x:Key="LocDlssgDownloadFailed">下载可选组件失败：{0}</sys:String>
+    <sys:String x:Key="LocDlssgDownloadCancelled">下载已取消，未写入任何游戏目录</sys:String>
+
     <!-- Result summary -->
     <sys:String x:Key="LocDlssgSummarySucceededGames">成功处理游戏: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryFailedGames">失败游戏: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryDirsDeploy">成功处理目标目录: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryDirsUninstall">清理的目标目录: {0}</sys:String>
+    <sys:String x:Key="LocDlssgSummaryFilesCopied">写入文件: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryDeletedFiles">已删除文件: {0}</sys:String>
     <sys:String x:Key="LocDlssgSummaryCancelled">操作已取消</sys:String>
     <sys:String x:Key="LocDlssgSummarySuccessHeader">=== 成功 ===</sys:String>
@@ -45,7 +50,7 @@
 
     <!-- Settings view -->
     <sys:String x:Key="LocDlssgSettingsTitle">Playnite DLSSG Plugin 配置</sys:String>
-    <sys:String x:Key="LocDlssgSettingsSubtitle">本插件释放的文件来自 https://github.com/sdli1995/dlssg_for_sm86</sys:String>
+    <sys:String x:Key="LocDlssgSettingsSubtitle">本插件释放的文件来自 https://github.com/sdli1995/dlssg_for_sm86 ，选项名与取值按 0.4.2 版排布</sys:String>
 
     <sys:String x:Key="LocDlssgCardDeploy">释放与卸载操作</sys:String>
     <sys:String x:Key="LocDlssgScopeLabel">默认释放范围</sys:String>
@@ -55,54 +60,109 @@
     <sys:String x:Key="LocDlssgScopeAll">全部游戏</sys:String>
     <sys:String x:Key="LocDlssgScopeHelp">当前筛选结果=列表筛选后；当前选中游戏=手动选中；全部游戏=整个库</sys:String>
     <sys:String x:Key="LocDlssgBtnDeploy">释放文件</sys:String>
-    <sys:String x:Key="LocDlssgBtnDeployTip">使用当前配置释放 DLL / INI 文件到目标游戏目录</sys:String>
+    <sys:String x:Key="LocDlssgBtnDeployTip">使用当前配置释放代理 DLL、INI 与 dlssg_sm86 文件夹到目标游戏目录</sys:String>
     <sys:String x:Key="LocDlssgBtnDeployDesc">点击上方按钮将按当前配置释放文件到目标游戏目录</sys:String>
     <sys:String x:Key="LocDlssgBtnUninstall">卸载文件</sys:String>
-    <sys:String x:Key="LocDlssgBtnUninstallTip">从目标游戏目录移除之前释放的 DLL / INI 文件</sys:String>
+    <sys:String x:Key="LocDlssgBtnUninstallTip">从目标游戏目录移除之前释放的代理 DLL、INI 与 dlssg_sm86 文件夹</sys:String>
     <sys:String x:Key="LocDlssgBtnUninstallDesc">点击上方按钮将从目标游戏目录移除之前释放的文件</sys:String>
 
-    <sys:String x:Key="LocDlssgCardIni">自定义 INI 配置</sys:String>
-    <sys:String x:Key="LocDlssgChkCustomIni">使用自定义 INI 内容（下方选项生成)</sys:String>
-    <sys:String x:Key="LocDlssgChkCustomIniTip">启用后，插件会根据下方选项自动生成 INI 内容；禁用则直接复制源目录下选定的 INI 文件</sys:String>
-    <sys:String x:Key="LocDlssgKernelLabel">KernelImage（内核镜像模式）</sys:String>
-    <sys:String x:Key="LocDlssgKernelDesc">PTX=驱动JIT编译(兼容性最好)；Cubin=预编译二进制(需精确匹配GPU)；Auto=自动选择</sys:String>
-    <sys:String x:Key="LocDlssgKernelTip">PTX=驱动JIT编译(兼容性最好)；Cubin=预编译二进制；Auto=自动选择</sys:String>
-    <sys:String x:Key="LocDlssgBilinearLabel">HardwareBilinear（硬件双线性过滤）</sys:String>
-    <sys:String x:Key="LocDlssgBilinearDesc">0=关闭(精确输出，默认)；1=开启(近似采样，仅SM86/Ampere支持)</sys:String>
-    <sys:String x:Key="LocDlssgBilinearTip">0=精确输出(默认)；1=硬件近似双线性过滤，仅SM86支持</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesLabel">MaxGeneratedFrames（最大生成帧数）</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesDesc">1=2X帧生成；2=3X；3=4X；5=6X(上限，实际倍率由游戏决定)</sys:String>
-    <sys:String x:Key="LocDlssgMaxFramesTip">帧生成倍率上限：1=2倍，2=3倍，3=4倍，5=6倍</sys:String>
-    <sys:String x:Key="LocDlssgLogLevelLabel">LogLevel（日志等级）</sys:String>
-    <sys:String x:Key="LocDlssgLogLevelDesc">0=关闭 1=仅错误 2=诊断信息 3=详细调试</sys:String>
-    <sys:String x:Key="LocDlssgLogLevelTip">0=关闭 1=仅错误 2=诊断信息 3=详细调试</sys:String>
+    <sys:String x:Key="LocDlssgCardFrameGen">帧生成（[FrameGeneration] / [DLSSG]）</sys:String>
+    <sys:String x:Key="LocDlssgChkCustomIni">使用自定义 INI 内容（由下方选项生成）</sys:String>
+    <sys:String x:Key="LocDlssgChkCustomIniTip">启用后，插件按下方选项生成 dlssg_sm86.ini；禁用则直接复制源目录或内置的出厂 INI</sys:String>
+    <sys:String x:Key="LocDlssgChkCustomIniDesc">下方三栏中的选项都写进生成的 INI；取消勾选时这些选项不生效，直接复制出厂 INI</sys:String>
 
-    <sys:String x:Key="LocDlssgCardPaths">文件路径设置</sys:String>
+    <sys:String x:Key="LocDlssgEngineLabel">Engine（插帧引擎）</sys:String>
+    <sys:String x:Key="LocDlssgEngineDesc">DLSS=NVIDIA DLSS-G 模型（默认）；XeSS=Intel XeSS-FG model 15，首次使用需下载模型包</sys:String>
+    <sys:String x:Key="LocDlssgEngineTip">DLSS=NVIDIA DLSS-G 模型；XeSS=Intel XeSS-FG 模型（2X/3X/4X，MaxGeneratedFrames 只能 1-3）</sys:String>
+
+    <sys:String x:Key="LocDlssgMaxFramesLabel">MaxGeneratedFrames（每真实帧生成数）</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesDesc">1=2X 2=3X 3=4X（出厂）5=6X；这是要求不是上限，实际倍率仍由游戏决定</sys:String>
+    <sys:String x:Key="LocDlssgMaxFramesTip">1=2X，2=3X，3=4X（出厂），5=6X。Engine=XeSS 时只能 1-3</sys:String>
+
+    <sys:String x:Key="LocDlssgOptimizedLabel">Optimized（一致性档位，仅 DLSS）</sys:String>
+    <sys:String x:Key="LocDlssgOptimizedDesc">0=原厂内核 1=全部逐位一致的加速（出厂）2=再加有损图像内核 3=全部有损加速（最快）</sys:String>
+    <sys:String x:Key="LocDlssgOptimizedTip">0=不加速；1=逐位一致（出厂）；2=有损图像内核；3=全部有损（最快）</sys:String>
+
+    <sys:String x:Key="LocDlssgPresetLabel">Preset（渲染预设，仅 DLSS）</sys:String>
+    <sys:String x:Key="LocDlssgPresetDesc">A=不做 UI 重组（出厂）B=UI 重组（需游戏同时给出无 HUD 画面与 UI 平面）C=FG Lite（更快，画质略低）</sys:String>
+    <sys:String x:Key="LocDlssgPresetTip">A=出厂；B=UI 重组（多数游戏无效果）；C=FG Lite，每个生成帧约省 32-54% GPU 时间</sys:String>
+
+    <sys:String x:Key="LocDlssgCatmullRomLabel">CatmullRomWarp（运动补偿取样）</sys:String>
+    <sys:String x:Key="LocDlssgCatmullRomDesc">0=双线性（出厂）1=Catmull-Rom，细结构更清晰，每个生成帧 +3~4%，不再与官方逐位一致</sys:String>
+    <sys:String x:Key="LocDlssgCatmullRomTip">0=双线性（出厂）；1=Catmull-Rom，细结构更清晰但更慢。310.9.16 包上开启会拒绝帧生成</sys:String>
+
+    <sys:String x:Key="LocDlssgCardXeSSAndSr">XeSS 引擎与超分（[XeSSFG] / [SuperResolution]）</sys:String>
+    <sys:String x:Key="LocDlssgCardXeSSAndSrDesc">前两项只在 Engine=XeSS 时读取；超分只在 RTX 30/20 上生效。用到时首次释放会下载对应组件</sys:String>
+
+    <sys:String x:Key="LocDlssgFlowResolutionLabel">FlowResolution（光流分辨率，仅 XeSS）</sys:String>
+    <sys:String x:Key="LocDlssgFlowResolutionDesc">Coarse / Middle（出厂）/ Fine，越细越慢；CoarseAt4K=输出≥4K 时自动用 Coarse</sys:String>
+    <sys:String x:Key="LocDlssgFlowResolutionTip">Coarse、Middle（出厂）、Fine、CoarseAt4K（4K 起自动 Coarse）</sys:String>
+
+    <sys:String x:Key="LocDlssgUseHudlessLabel">UseHudless（UI 合成，仅 XeSS）</sys:String>
+    <sys:String x:Key="LocDlssgUseHudlessDesc">Auto（出厂，等同 0：整幅画面含 UI 一起插值）1=严格（缺 HUD-less 画面即报错）0=不合成</sys:String>
+    <sys:String x:Key="LocDlssgUseHudlessTip">Auto（出厂，等同 0）；1=一律用游戏的无 HUD 画面，缺则报错；0=不做 UI 合成</sys:String>
+
+    <sys:String x:Key="LocDlssgSuperResolutionLabel">Mode（超分预设，仅 RTX 30/20）</sys:String>
+    <sys:String x:Key="LocDlssgSuperResolutionDesc">Off=不介入（出厂）M/L-INT8=预设 M/L 跑 INT8 内核；M/L-FP16=同一预设用 NVIDIA 内核</sys:String>
+    <sys:String x:Key="LocDlssgSuperResolutionTip">Off（出厂）、M-INT8、L-INT8、M-FP16、L-FP16</sys:String>
+    <sys:String x:Key="LocDlssgSuperResolutionHelp">INT8 加速在「性能 / 超级性能」档；「画质 / 平衡 / DLAA」档用 M/L 比游戏自带的 K 慢。RTX 40/50 上不起作用</sys:String>
+
+    <sys:String x:Key="LocDlssgCardLogging">日志与诊断（[Logging]）</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelLabel">Level（日志等级）</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelDesc">0=关闭 1=仅错误（出厂）2=配置与能力 3=内核与 Evaluate 追踪</sys:String>
+    <sys:String x:Key="LocDlssgLogLevelTip">0=关闭；1=仅错误（出厂）；2=配置与能力；3=内核追踪</sys:String>
+    <sys:String x:Key="LocDlssgFrameTimingLabel">FrameTiming（帧计时）</sys:String>
+    <sys:String x:Key="LocDlssgFrameTimingDesc">1=每个真实帧在日志目录另写一行 frame_timing.txt，用于反馈性能</sys:String>
+    <sys:String x:Key="LocDlssgFrameTimingTip">0=不写（出厂）；1=写 frame_timing.txt</sys:String>
+    <sys:String x:Key="LocDlssgLogLocationHelp">日志只有一份：游戏目录\dlssg_sm86\logs\dlssg_sm86.log。排查问题时先把 Level 调到 2</sys:String>
+
+    <sys:String x:Key="LocDlssgCardPaths">文件路径与组件缓存</sys:String>
     <sys:String x:Key="LocDlssgSourceDirLabel">源目录</sys:String>
-    <sys:String x:Key="LocDlssgSourceDirDesc">DLSSG 文件所在文件夹（留空则使用插件内置资源）</sys:String>
+    <sys:String x:Key="LocDlssgSourceDirDesc">上游解压目录（含 version.dll、dlssg_sm86.ini 与 dlssg_sm86 文件夹）；留空则使用插件内置资源</sys:String>
     <sys:String x:Key="LocDlssgBtnBrowse">浏览...</sys:String>
-    <sys:String x:Key="LocDlssgBtnBrowseTip">选择包含 DLL 和 INI 文件的文件夹</sys:String>
+    <sys:String x:Key="LocDlssgBtnBrowseTip">选择上游发布包解压后的文件夹</sys:String>
     <sys:String x:Key="LocDlssgPathPlaceholder">输入或选择路径</sys:String>
-    <sys:String x:Key="LocDlssgSourceDllHelp">DLL来源：内置资源根目录(version.dll) 或 alternatives文件夹(dinput8/dxgi/dbghelp/d3d12/winmm.dll)</sys:String>
-    <sys:String x:Key="LocDlssgSourceIniHelp">INI来源：内置的 dlssg_sm86.ini；设置了来源目录时使用该目录下的 dlssg_sm86.ini</sys:String>
+    <sys:String x:Key="LocDlssgSourceDirHelp">内置资源只含最常用的文件；XeSS 模型包、超分文件与备用代理在首次使用时才下载并缓存</sys:String>
     <sys:String x:Key="LocDlssgDllLabel">DLL 文件</sys:String>
-    <sys:String x:Key="LocDlssgDllDesc">选择要部署的 DLL 代理文件</sys:String>
-    <sys:String x:Key="LocDlssgDllTip">可选：version.dll(根目录)、dinput8.dll、dxgi.dll、dbghelp.dll、d3d12.dll、winmm.dll(alternatives文件夹)</sys:String>
-    <sys:String x:Key="LocDlssgDllHelp">version.dll为标准代理；其余为替代注入方式</sys:String>
+    <sys:String x:Key="LocDlssgDllDesc">选择要部署的代理 DLL（一次只放一个）</sys:String>
+    <sys:String x:Key="LocDlssgDllTip">version.dll 为标准代理；其余五个为替代注入方式，按 winmm → dbghelp → dinput8 → dxgi/d3d12 的顺序换</sys:String>
+    <sys:String x:Key="LocDlssgDllHelp">只有游戏不加载 version.dll 时才换替代代理；dxgi.dll 与 d3d12.dll 在渲染路径上，最后才用且不要同时放</sys:String>
     <sys:String x:Key="LocDlssgIniLabel">INI 文件</sys:String>
-    <sys:String x:Key="LocDlssgIniDesc">选择要部署的 INI 配置文件</sys:String>
-    <sys:String x:Key="LocDlssgIniTip">使用内置或来源目录中的 dlssg_sm86.ini</sys:String>
-    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini为出厂配置；内核族会根据显卡自动选择</sys:String>
-    <sys:String x:Key="LocDlssgBrowseDialog">选择 DLSSG 文件所在文件夹</sys:String>
+    <sys:String x:Key="LocDlssgIniDesc">要部署的 INI 文件名</sys:String>
+    <sys:String x:Key="LocDlssgIniTip">使用内置或源目录中的 dlssg_sm86.ini</sys:String>
+    <sys:String x:Key="LocDlssgIniHelp">dlssg_sm86.ini 必须与 version.dll 放在同一目录</sys:String>
+
+    <sys:String x:Key="LocDlssgCacheLabel">组件缓存</sys:String>
+    <sys:String x:Key="LocDlssgCacheDesc">可选组件下载一次后缓存在本地，之后的释放都从这里取</sys:String>
+    <sys:String x:Key="LocDlssgCacheComponents">已缓存: {0}</sys:String>
+    <sys:String x:Key="LocDlssgCacheSize">占用: {0}</sys:String>
+    <sys:String x:Key="LocDlssgCacheLocation">位置: {0}</sys:String>
+    <sys:String x:Key="LocDlssgCacheEmpty">暂无</sys:String>
+    <sys:String x:Key="LocDlssgCacheItemXeSS">XeSS 模型包</sys:String>
+    <sys:String x:Key="LocDlssgCacheItemSr">超分文件</sys:String>
+    <sys:String x:Key="LocDlssgCacheItemProxy">备用代理</sys:String>
+    <sys:String x:Key="LocDlssgBtnOpenCache">打开缓存目录</sys:String>
+    <sys:String x:Key="LocDlssgBtnClearCache">清理缓存</sys:String>
+    <sys:String x:Key="LocDlssgBtnClearCacheTip">删除已下载的可选组件，下次用到时重新下载</sys:String>
+    <sys:String x:Key="LocDlssgCacheClearConfirm">将删除已下载并缓存的可选组件（不影响已释放到游戏的文件）。是否继续？</sys:String>
+    <sys:String x:Key="LocDlssgCacheClearFailed">清理缓存失败: {0}</sys:String>
+    <sys:String x:Key="LocDlssgBrowseDialog">选择 dlssg_for_sm86 发布包解压后的文件夹</sys:String>
 
     <!-- Settings validation -->
     <sys:String x:Key="LocDlssgErrSourceMissing">源目录不存在</sys:String>
     <sys:String x:Key="LocDlssgErrDllInvalid">DLL 文件 无效</sys:String>
     <sys:String x:Key="LocDlssgErrIniInvalid">INI 文件 无效</sys:String>
-    <sys:String x:Key="LocDlssgErrKernel">KernelImage 必须是 PTX、Cubin 或 Auto</sys:String>
-    <sys:String x:Key="LocDlssgErrBilinear">HardwareBilinear 必须是 0 或 1</sys:String>
+    <sys:String x:Key="LocDlssgErrEngine">Engine 必须是 DLSS 或 XeSS</sys:String>
     <sys:String x:Key="LocDlssgErrMaxFrames">MaxGeneratedFrames 必须在 1 到 5 之间</sys:String>
-    <sys:String x:Key="LocDlssgErrLogLevel">LogLevel 必须在 0 到 3 之间</sys:String>
+    <sys:String x:Key="LocDlssgErrMaxFramesXeSS">Engine=XeSS 时 MaxGeneratedFrames 只能是 1 到 3</sys:String>
+    <sys:String x:Key="LocDlssgErrOptimized">Optimized 必须在 0 到 3 之间</sys:String>
+    <sys:String x:Key="LocDlssgErrPreset">Preset 必须是 A、B 或 C</sys:String>
+    <sys:String x:Key="LocDlssgErrCatmullRom">CatmullRomWarp 必须是 0 或 1</sys:String>
+    <sys:String x:Key="LocDlssgErrFlowResolution">FlowResolution 必须是 Coarse、Middle、Fine 或 CoarseAt4K</sys:String>
+    <sys:String x:Key="LocDlssgErrUseHudless">UseHudless 必须是 Auto、1 或 0</sys:String>
+    <sys:String x:Key="LocDlssgErrSuperResolution">超分 Mode 必须是 Off、M-INT8、L-INT8、M-FP16 或 L-FP16</sys:String>
+    <sys:String x:Key="LocDlssgErrLogLevel">Level 必须在 0 到 3 之间</sys:String>
+    <sys:String x:Key="LocDlssgErrFrameTiming">FrameTiming 必须是 0 或 1</sys:String>
     <sys:String x:Key="LocDlssgErrScope">释放范围无效</sys:String>
     <sys:String x:Key="LocDlssgErrCustomIni">启用自定义 INI 时，内容不能为空</sys:String>
 </ResourceDictionary>

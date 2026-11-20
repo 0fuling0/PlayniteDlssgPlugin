@@ -294,6 +294,28 @@ foreach ($readme in @("README.md", "README_EN.md")) {
 }
 
 # ---------------------------------------------------------------------------
+# Keep the component cache pinned to the same upstream version
+# ---------------------------------------------------------------------------
+
+# ComponentCache.cs derives the download URLs from this constant, so a stale value
+# would keep fetching the previous release even though the bundled payload moved on.
+$cacheSourcePath = Join-Path $repoRoot "ComponentCache.cs"
+if (Test-Path $cacheSourcePath) {
+    $text = [System.IO.File]::ReadAllText($cacheSourcePath)
+    $updated = [regex]::Replace(
+        $text,
+        'UpstreamVersion\s*=\s*"[^"]*"',
+        "UpstreamVersion = `"$latestTag`"")
+
+    if ($updated -ne $text) {
+        $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+        [System.IO.File]::WriteAllText($cacheSourcePath, $updated, $utf8NoBom)
+        Write-Host "Pinned ComponentCache.cs to $latestTag"
+        Write-Host "  Check ComponentCache.RawFiles / ZipOnlyFiles and the bundled file list in PlayniteDlssgPlugin.csproj"
+    }
+}
+
+# ---------------------------------------------------------------------------
 # Roll the plugin version
 # ---------------------------------------------------------------------------
 
@@ -312,7 +334,7 @@ Write-Host "Plugin version rolled to $newVersion"
 # Commit, tag, push
 # ---------------------------------------------------------------------------
 
-Invoke-Git -Arguments @("add", "--", $SubmodulePath, "manifest", "Properties/AssemblyInfo.cs", "README.md", "README_EN.md") | Out-Null
+Invoke-Git -Arguments @("add", "--", $SubmodulePath, "manifest", "Properties/AssemblyInfo.cs", "README.md", "README_EN.md", "ComponentCache.cs") | Out-Null
 
 $staged = Invoke-Git -Arguments @("diff", "--cached", "--name-only")
 if ($staged.Output.Count -eq 0) {
